@@ -95,6 +95,113 @@
   background: rgba(255, 220, 140, 0.95);
 }
 
+/* ===== 125% ===== */
+@media (max-width: 1280px) {
+  .uni-card-big {
+    margin-right: 10%;
+    margin-top: -20px;
+    width: min(900px, 88%);
+  }
+  .uni-header {
+    height: 62px;
+    font-size: 30px;
+  }
+  .back-arrow {
+    font-size: 26px;
+  }
+  .uni-body {
+    padding: 20px 28px 20px 28px;
+    gap: 14px;
+  }
+  .uni-btn {
+    font-size: 18px;
+    min-width: 160px;
+    max-width: 220px;
+    min-height: 48px;
+  }
+}
+
+/* ===== 110% / Планшет ===== */
+@media (max-width: 1100px) {
+  .content {
+    margin-left: 0;
+    height: auto;
+    min-height: 80vh;
+    padding: 20px 16px 40px;
+    align-items: flex-start;
+  }
+  .uni-card-big {
+    margin-right: 0;
+    margin-top: 0;
+    width: min(900px, 94%);
+  }
+  .uni-header {
+    height: 56px;
+    font-size: 24px;
+  }
+  .back-arrow {
+    font-size: 20px;
+    left: 16px;
+  }
+  .uni-body {
+    padding: 16px 20px 18px 20px;
+    gap: 12px;
+  }
+  .uni-btn {
+    font-size: 15px;
+    min-width: 140px;
+    max-width: 200px;
+    min-height: 44px;
+    border-radius: 18px;
+  }
+}
+
+/* ===== Мобільний ===== */
+@media (max-width: 600px) {
+  .content {
+    margin-left: 0;
+    padding: 10px 8px 20px;
+    justify-content: center;
+    height: auto;
+  }
+  .uni-card-big {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    border-radius: 12px;
+    box-shadow: none;
+  }
+  .uni-header {
+    height: 50px;
+    font-size: 20px;
+  }
+  .back-arrow {
+    font-size: 18px;
+    left: 12px;
+  }
+  .uni-body {
+    padding: 14px 14px 16px 14px;
+    gap: 10px;
+  }
+  .top-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .bottom-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+  }
+  .uni-btn {
+    font-size: 14px;
+    min-width: 90%;
+    max-width: 100%;
+    min-height: 48px;
+    border-radius: 14px;
+  }
+}
+
 </style>
 {% endblock %}
 

@@ -324,6 +324,166 @@ body { overflow-x: hidden; }
     filter: brightness(1.1); 
 }
 
+/* ===== 125% ===== */
+@media (max-width: 1280px) {
+  .content {
+    margin-left: 60px;
+    gap: 30px;
+  }
+  .left-col {
+    margin-top: -20px;
+  }
+  .uni-header {
+    height: 62px;
+  }
+  .rec-header {
+    height: 62px;
+    min-height: 62px;
+  }
+  .calc-card {
+    margin-top: -20px;
+    width: clamp(240px, 24vw, 420px);
+  }
+  .calc-header {
+    height: 62px;
+  }
+}
+
+/* ===== 110% / Планшет ===== */
+@media (max-width: 1100px) {
+  .content {
+    margin-left: 0;
+    flex-direction: column;
+    height: auto;
+    overflow: visible;
+    padding: 20px 16px 40px;
+    align-items: center;
+    gap: 20px;
+  }
+  .left-col {
+    width: min(900px, 94%);
+    margin-top: 0;
+    max-height: none;
+    overflow: visible;
+  }
+  .calc-card {
+    width: min(900px, 94%);
+    margin-top: 0;
+    align-self: center;
+  }
+  .uni-header {
+    height: 56px;
+    font-size: 20px;
+  }
+  .back-arrow {
+    font-size: 20px;
+    left: 16px;
+  }
+  .uni-body {
+    padding: 16px 20px 18px;
+  }
+  .uni-btn {
+    font-size: 15px;
+    min-width: 130px;
+    min-height: 44px;
+  }
+  .rec-header, .calc-header {
+    height: 56px;
+    min-height: 56px;
+    font-size: 20px;
+  }
+  .rec-item-title {
+    font-size: 17px;
+  }
+}
+
+/* ===== Мобільний ===== */
+@media (max-width: 600px) {
+  .content {
+    padding: 10px 8px 20px;
+    gap: 14px;
+  }
+  .left-col {
+    width: 100%;
+    gap: 14px;
+  }
+  .uni-card-big, .rec-card, .calc-card {
+    border-radius: 12px;
+    box-shadow: none;
+    width: 100%;
+  }
+  .calc-card {
+    width: 100%;
+  }
+  .uni-header {
+    height: 50px;
+    font-size: 16px;
+    padding: 0 40px;
+  }
+  .back-arrow {
+    font-size: 18px;
+    left: 12px;
+  }
+  .uni-body {
+    padding: 12px 12px 14px;
+    gap: 10px;
+  }
+  .top-row, .bottom-row {
+    gap: 8px;
+  }
+  .uni-btn {
+    font-size: 13px;
+    min-width: 110px;
+    min-height: 38px;
+    border-radius: 14px;
+    padding: 6px 12px;
+  }
+  .rec-header, .calc-header {
+    height: 50px;
+    min-height: 50px;
+    font-size: 18px;
+  }
+  .rec-body {
+    padding: 10px 14px 14px;
+  }
+  .rec-item-title {
+    font-size: 15px;
+  }
+  .calc-body {
+    padding: 14px 14px 18px;
+    gap: 8px;
+  }
+  .form-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .form-row label {
+    width: 100%;
+    font-size: 16px;
+  }
+  .form-row input, .form-row select {
+    font-size: 14px;
+    padding: 10px 14px;
+    border-radius: 16px;
+  }
+  .avg-row {
+    flex-direction: column;
+    gap: 4px;
+  }
+  .avg-row label {
+    width: 100%;
+    font-size: 16px;
+  }
+  .error-text {
+    margin-left: 0;
+  }
+  .calc-btn {
+    font-size: 18px;
+    padding: 12px;
+    border-radius: 14px;
+  }
+}
+
 </style>
 {% endblock %}
 

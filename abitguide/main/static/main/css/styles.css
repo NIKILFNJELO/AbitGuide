@@ -9,6 +9,10 @@ body {
   background-attachment: fixed;
 }
 
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
 .page {
   display: none;
 }

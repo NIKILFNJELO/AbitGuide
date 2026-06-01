@@ -1,0 +1,475 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Редагування дат для {{ uni.abbr }}{% endblock %}
+
+{% block extra_css %}
+<style>
+
+  .content {
+    margin-left: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+  }
+
+  .login-card {
+    margin-right: 25%;
+    margin-top: -50px;
+    width: 1000px;
+    max-height: calc(100vh - 190px);
+
+    background: rgba(255, 220, 160, 0.70);
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .login-header {
+    background: #e3a64b;
+    height: 75px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    font-family: 'Oswald', sans-serif;
+    font-size: 34px;
+    font-weight: 600;
+    color: #3a2a00;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+
+  .back-arrow {
+    position: absolute;
+    left: 24px;
+    font-size: 32px;
+    cursor: pointer;
+    transition: 0.25s ease;
+    color: #3a2a00;
+    text-decoration: none;
+  }
+
+  .back-arrow:hover {
+    transform: translateX(-6px) scale(1.1);
+  }
+
+  .login-body {
+    padding: 35px 40px 25px 40px;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .login-body::-webkit-scrollbar { display: none; }
+
+  .month-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: #2b1a00;
+    padding-bottom: 8px;
+    border-bottom: 2px solid rgba(227, 166, 75, 0.6);
+    margin-bottom: 14px;
+    margin-top: 10px;
+  }
+
+  .form-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 12px;
+    gap: 10px;
+  }
+
+  .form-row label {
+    width: 180px;
+    flex-shrink: 0;
+    font-family: 'Oswald', sans-serif;
+    font-size: 22px;
+    color: #2b1a00;
+    padding-top: 12px;
+  }
+
+  .form-row input,
+  .form-row textarea {
+    flex: 1;
+    padding: 14px 20px;
+
+    border-radius: 25px;
+    border: none;
+
+    background: #f2e7d5;
+
+    font-family: 'Ubuntu Mono', monospace;
+    font-size: 18px;
+    line-height: 1.5;
+
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.15);
+    outline: none;
+    resize: none;
+  }
+
+  .form-row textarea {
+    min-height: 70px;
+    border-radius: 20px;
+    scrollbar-width: none;
+  }
+
+  .remove-row-btn {
+    flex-shrink: 0;
+    margin-top: 12px;
+    background: none;
+    border: none;
+    font-size: 20px;
+    color: rgba(176, 64, 48, 0.60);
+    cursor: pointer;
+    transition: 0.2s;
+    padding: 0 4px;
+    line-height: 1;
+  }
+  .remove-row-btn:hover {
+    color: rgba(176, 64, 48, 1);
+    transform: scale(1.2);
+  }
+
+  .add-row-btn {
+    margin-left: 190px;
+    margin-bottom: 18px;
+    padding: 9px 24px;
+    border: 2px dashed rgba(43, 26, 0, 0.35);
+    border-radius: 20px;
+    background: transparent;
+    font-family: 'Ubuntu Mono', monospace;
+    font-size: 16px;
+    color: rgba(43, 26, 0, 0.60);
+    cursor: pointer;
+    transition: 0.2s;
+    display: block;
+  }
+  .add-row-btn:hover {
+    border-color: rgba(43, 26, 0, 0.70);
+    color: rgba(43, 26, 0, 0.90);
+    background: rgba(242, 231, 213, 0.60);
+  }
+
+  .save-btn {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding: 15px;
+
+    border: none;
+    border-radius: 20px;
+
+    background: #2f5fa5;
+    color: white;
+
+    font-size: 24px;
+    font-family: 'Oswald', sans-serif;
+
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+
+  .save-btn:hover {
+    filter: brightness(1.08);
+  }
+
+  /* ===== 125% ===== */
+  @media (max-width: 1280px) {
+    .login-card {
+      margin-right: 10%;
+      margin-top: -20px;
+      width: min(1000px, 88%);
+    }
+    .login-header {
+      height: 62px;
+      font-size: 28px;
+    }
+    .back-arrow {
+      font-size: 26px;
+    }
+    .login-body {
+      padding: 16px 28px 20px 28px;
+    }
+    .month-title {
+      font-size: 22px;
+    }
+    .form-row label {
+      font-size: 18px;
+      width: 150px;
+    }
+    .form-row input,
+    .form-row textarea {
+      font-size: 16px;
+      padding: 13px 20px;
+    }
+    .add-row-btn {
+      margin-left: 160px;
+      font-size: 14px;
+    }
+    .save-btn {
+      font-size: 20px;
+    }
+  }
+
+  /* ===== 110% / Планшет ===== */
+  @media (max-width: 1100px) {
+    .content {
+      margin-left: 0;
+      height: auto;
+      min-height: 80vh;
+      padding: 20px 16px 40px;
+      align-items: flex-start;
+    }
+    .login-card {
+      margin-right: 0;
+      margin-top: 0;
+      width: min(1000px, 94%);
+      max-height: none;
+    }
+    .login-header {
+      height: 56px;
+      font-size: 22px;
+    }
+    .back-arrow {
+      font-size: 20px;
+      left: 16px;
+    }
+    .login-body {
+      padding: 14px 20px 18px 20px;
+    }
+    .month-title {
+      font-size: 18px;
+    }
+    .form-row label {
+      font-size: 16px;
+      width: 130px;
+    }
+    .form-row input,
+    .form-row textarea {
+      font-size: 14px;
+      padding: 12px 16px;
+      border-radius: 18px;
+    }
+    .form-row textarea {
+      border-radius: 18px;
+    }
+    .add-row-btn {
+      margin-left: 140px;
+      font-size: 13px;
+      border-radius: 18px;
+    }
+    .save-btn {
+      font-size: 18px;
+      border-radius: 18px;
+    }
+  }
+
+  /* ===== Мобільний ===== */
+  @media (max-width: 600px) {
+    .content {
+      margin-left: 0;
+      padding: 10px 8px 20px;
+      justify-content: center;
+      height: auto;
+    }
+    .login-card {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      border-radius: 12px;
+      box-shadow: none;
+      max-height: none;
+    }
+    .login-header {
+      height: 50px;
+      font-size: 18px;
+    }
+    .back-arrow {
+      font-size: 18px;
+      left: 12px;
+    }
+    .login-body {
+      padding: 14px 14px 16px 14px;
+    }
+    .month-title {
+      font-size: 16px;
+    }
+    .form-row {
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .form-row label {
+      width: 100%;
+      font-size: 14px;
+      padding-top: 0;
+    }
+    .form-row input,
+    .form-row textarea {
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 14px;
+    }
+    .form-row textarea {
+      border-radius: 14px;
+    }
+    .add-row-btn {
+      margin-left: 0;
+      font-size: 13px;
+      border-radius: 14px;
+    }
+    .save-btn {
+      font-size: 16px;
+      border-radius: 14px;
+    }
+  }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="content">
+  <div class="login-card">
+
+    <div class="login-header">
+      <a class="back-arrow" href="{% url 'university_dates' slug=uni.slug %}">&#10094;</a>
+      Редагування дат вступної кампанії {{ uni.abbr }}
+    </div>
+
+    <div class="login-body">
+      <form method="post" id="datesForm">
+        {% csrf_token %}
+
+        <!-- ЛИПЕНЬ -->
+        <div class="month-title">Липень</div>
+        <div id="july-rows">
+          {% for row in july %}
+          <div class="form-row">
+            <label>Подія {{ forloop.counter }}:</label>
+            <input type="text" name="july_date_{{ forloop.counter }}"
+                   value="{{ row.date }}" placeholder="Дата або період">
+            <textarea name="july_text_{{ forloop.counter }}"
+                      placeholder="Опис події">{{ row.text }}</textarea>
+            <button type="button" class="remove-row-btn" onclick="removeRow(this)">✕</button>
+          </div>
+          {% empty %}
+          <div class="form-row">
+            <label>Подія 1:</label>
+            <input type="text" name="july_date_1" placeholder="Дата або період">
+            <textarea name="july_text_1" placeholder="Опис події"></textarea>
+            <button type="button" class="remove-row-btn" onclick="removeRow(this)">✕</button>
+          </div>
+          {% endfor %}
+        </div>
+        <button type="button" class="add-row-btn" onclick="addRow('july')">+ Додати рядок</button>
+
+        <!-- СЕРПЕНЬ -->
+        <div class="month-title">Серпень</div>
+        <div id="august-rows">
+          {% for row in august %}
+          <div class="form-row">
+            <label>Подія {{ forloop.counter }}:</label>
+            <input type="text" name="august_date_{{ forloop.counter }}"
+                   value="{{ row.date }}" placeholder="Дата або період">
+            <textarea name="august_text_{{ forloop.counter }}"
+                      placeholder="Опис події">{{ row.text }}</textarea>
+            <button type="button" class="remove-row-btn" onclick="removeRow(this)">✕</button>
+          </div>
+          {% empty %}
+          <div class="form-row">
+            <label>Подія 1:</label>
+            <input type="text" name="august_date_1" placeholder="Дата або період">
+            <textarea name="august_text_1" placeholder="Опис події"></textarea>
+            <button type="button" class="remove-row-btn" onclick="removeRow(this)">✕</button>
+          </div>
+          {% endfor %}
+        </div>
+        <button type="button" class="add-row-btn" onclick="addRow('august')">+ Додати рядок</button>
+
+        <!-- ВЕРЕСЕНЬ–ЖОВТЕНЬ -->
+        <div class="month-title">Вересень — Жовтень</div>
+        <div id="sep_oct-rows">
+          {% for row in sep_oct %}
+          <div class="form-row">
+            <label>Подія {{ forloop.counter }}:</label>
+            <input type="text" name="sep_oct_date_{{ forloop.counter }}"
+                   value="{{ row.date }}" placeholder="Дата або період">
+            <textarea name="sep_oct_text_{{ forloop.counter }}"
+                      placeholder="Опис події">{{ row.text }}</textarea>
+            <button type="button" class="remove-row-btn" onclick="removeRow(this)">✕</button>
+          </div>
+          {% empty %}
+          <div class="form-row">
+            <label>Подія 1:</label>
+            <input type="text" name="sep_oct_date_1" placeholder="Дата або період">
+            <textarea name="sep_oct_text_1" placeholder="Опис події"></textarea>
+            <button type="button" class="remove-row-btn" onclick="removeRow(this)">✕</button>
+          </div>
+          {% endfor %}
+        </div>
+        <button type="button" class="add-row-btn" onclick="addRow('sep_oct')">+ Додати рядок</button>
+
+        <button type="submit" class="save-btn">ЗБЕРЕГТИ ЗМІНИ</button>
+
+      </form>
+    </div>
+
+  </div>
+</main>
+
+<script>
+const counters = { july: 0, august: 0, sep_oct: 0 };
+
+document.addEventListener('DOMContentLoaded', () => {
+  ['july', 'august', 'sep_oct'].forEach(prefix => {
+    counters[prefix] = document.getElementById(prefix + '-rows')
+                               .querySelectorAll('.form-row').length;
+  });
+});
+
+function addRow(prefix) {
+  counters[prefix]++;
+  const n = counters[prefix];
+  const container = document.getElementById(prefix + '-rows');
+
+  const div = document.createElement('div');
+  div.className = 'form-row';
+  div.innerHTML = `
+    <label>Подія ${n}:</label>
+    <input type="text" name="${prefix}_date_${n}" placeholder="Дата або період">
+    <textarea name="${prefix}_text_${n}" placeholder="Опис події"></textarea>
+    <button type="button" class="remove-row-btn" onclick="removeRow(this)">✕</button>
+  `;
+  container.appendChild(div);
+}
+
+function removeRow(btn) {
+  const row = btn.closest('.form-row');
+  const container = row.parentElement;
+  if (container.querySelectorAll('.form-row').length > 1) {
+    row.remove();
+    renumberRows(container.id.replace('-rows', ''));
+  }
+}
+
+function renumberRows(prefix) {
+  const container = document.getElementById(prefix + '-rows');
+  container.querySelectorAll('.form-row').forEach((row, idx) => {
+    const n = idx + 1;
+    row.querySelector('label').textContent = `Подія ${n}:`;
+    const inp = row.querySelector('input[type="text"]');
+    const ta  = row.querySelector('textarea');
+    if (inp) inp.name = `${prefix}_date_${n}`;
+    if (ta)  ta.name  = `${prefix}_text_${n}`;
+  });
+  counters[prefix] = container.querySelectorAll('.form-row').length;
+}
+</script>
+
+{% endblock %}

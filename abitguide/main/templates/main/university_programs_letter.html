@@ -1,0 +1,326 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Освітні програми - Освіта{% endblock %}
+
+{% block extra_css %}
+<style>
+
+.content {
+  margin-left: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100vh;
+}
+
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  width: 900px;
+  margin-right: 25%;
+  margin-top: -50px;
+  align-items: flex-start;
+}
+
+.uni-card-big {
+  width: 100%;
+  background: rgba(255, 220, 160, 0.70);
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.uni-header {
+  background: #e3a64b;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-family: 'Oswald', sans-serif;
+  font-size: 38px;
+  font-weight: 600;
+  color: #3a2a00;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.back-arrow {
+  position: absolute;
+  left: 24px;
+  font-size: 32px;
+  cursor: pointer;
+  transition: 0.25s ease;
+  color: #3a2a00;
+  text-decoration: none;
+}
+
+.back-arrow:hover {
+  transform: translateX(-6px) scale(1.1);
+}
+
+.uni-body {
+  padding: 16px 40px 20px 40px;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.spec-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 45px;
+  background: #f2e7d5;
+  border-radius: 25px;
+  padding: 8px 20px;
+  min-width: 180px;
+  max-width: 240px;
+  text-align: center;
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 20px;
+  line-height: 1.3;
+  color: rgba(43, 26, 0, 0.75);
+  cursor: pointer;
+  transition: 0.2s ease;
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.15);
+  border: 2px solid transparent;
+}
+
+.spec-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+  background: rgba(255, 220, 140, 0.95);
+}
+
+.spec-btn.active {
+  background: rgba(255, 220, 140, 0.95);
+}
+
+.detail-card {
+  width: 100%;
+  background: rgba(255, 220, 160, 0.70);
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  display: none;
+  flex-shrink: 0;
+  animation: fadeSlide 0.28s ease;
+}
+
+.detail-card.visible {
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes fadeSlide {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.detail-header {
+  background: #e3a64b;
+  height: 75px;
+  min-height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: #3a2a00;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  text-align: center;
+  padding: 0 24px;
+  position: sticky;
+  top: 0;
+  z-index: 5;
+}
+
+.detail-content {
+  padding: 18px 40px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.detail-content::-webkit-scrollbar {
+  display: none;
+}
+
+.detail-section {
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 20px;
+  color: rgba(43, 26, 0, 0.80);
+  line-height: 1.55;
+}
+
+.detail-section strong {
+  display: block;
+  color: rgba(43, 26, 0, 1);
+  font-weight: 700;
+  margin-bottom: 1px;
+}
+
+.score-line {
+  margin-top: 4px;
+  line-height: 1.7;
+}
+
+@media (min-width: 992px) {
+  .detail-card.visible {
+    max-height: calc(100vh - 475px);
+  }
+  .detail-content {
+    overflow-y: auto;
+  }
+  .content {
+    height: 100vh;
+    overflow: hidden;
+  }
+}
+
+@media (max-width: 991px) {
+  .content {
+    height: auto;
+  }
+  .page-wrapper {
+    width: 100%;
+    margin-right: 0;
+    margin-top: 20px;
+  }
+  .detail-card.visible {
+    max-height: none;
+  }
+  .detail-content {
+    height: auto;
+    max-height: none;
+    overflow: visible;
+  }
+  .uni-header {
+    font-size: 26px;
+  }
+  .detail-header {
+    font-size: 20px;
+  }
+  .spec-btn {
+    font-size: 16px;
+    min-width: 140px;
+  }
+}
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="content">
+  <div class="page-wrapper">
+
+    <div class="uni-card-big">
+      <div class="uni-header">
+         <a class="back-arrow" href="{% url 'university_programs' slug %}">&#10094;</a>
+        Перелік спеціальностей за шифром {{ letter }}
+        {% if request.user.is_authenticated and request.user.profile.role == 'university_rep' and request.user.profile.university_slug == slug %}
+  <form method="post" action="{% url 'university_program_delete' slug letter %}" style="position:absolute; right:24px;">
+    {% csrf_token %}
+    <button type="submit" style="background:none; border:none; cursor:pointer; padding:0;">
+      <img src="{% static 'main/images/delete_icon.png' %}" alt="delete" width="28" height="28"
+           style="filter: brightness(0);">
+    </button>
+  </form>
+{% endif %}
+      </div>
+      <div class="uni-body">
+        {% for specialty in specialties %}
+          <div class="spec-btn" onclick="toggleDetail('{{ specialty.id }}', this)">
+            {{ specialty.name }}
+          </div>
+        {% empty %}
+          <div class="spec-btn">Спеціальності ще не додані</div>
+        {% endfor %}
+
+        {% if request.user.is_authenticated and request.user.profile.role == 'university_rep' and request.user.profile.university_slug == slug %}
+          <a href="{% url 'specialty_create' slug=slug %}" class="spec-btn" style="border: 2px dashed rgba(43,26,0,0.4); text-decoration: none;">
+            + Додати спеціальність
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    {% for specialty in specialties %}
+      <div class="detail-card" id="detail-{{ specialty.id }}">
+        <div class="detail-header" style="position:relative;">
+          {{ specialty.code }} – {{ specialty.name }}
+          {% if request.user.is_authenticated and request.user.profile.role == 'university_rep' and request.user.profile.university_slug == slug %}
+            <a href="{% url 'specialty_edit' slug=slug specialty_id=specialty.id %}"
+               style="position:absolute; right:20px;">
+              <img src="{% static 'main/images/edit_icon.png' %}" alt="edit" width="28" height="28"
+                   style="filter: brightness(0);">
+            </a>
+            <form method="post" action="{% url 'specialty_delete' slug=slug specialty_id=specialty.id %}" style="position:absolute; right:65px; margin:0;">
+    {% csrf_token %}
+    <button type="submit" style="background:none; border:none; cursor:pointer; padding:0;">
+      <img src="{% static 'main/images/delete_icon.png' %}" alt="delete" width="28" height="28"
+           style="filter: brightness(0);">
+    </button>
+  </form>
+          {% endif %}
+        </div>
+        <div class="detail-content">
+          {% if specialty.about %}
+            <div class="detail-section">
+              <strong>Про спеціальність:</strong>
+              {{ specialty.about }}
+            </div>
+          {% endif %}
+          {% if specialty.what_to_study %}
+            <div class="detail-section">
+              <strong>Що вивчають:</strong>
+              {{ specialty.what_to_study }}
+            </div>
+          {% endif %}
+          {% if specialty.career %}
+            <div class="detail-section">
+              <strong>Ким можна працювати:</strong>
+              {{ specialty.career }}
+            </div>
+          {% endif %}
+          {% if specialty.min_score or specialty.high_score %}
+            <div class="detail-section">
+              <strong>Мінімальний конкурсний бал:</strong>
+              <div class="score-line">
+                {% if specialty.min_score %}{{ specialty.min_score }} – мінімальний бал для вступу<br>{% endif %}
+                {% if specialty.high_score %}{{ specialty.high_score }}+ – високі шанси на вступ{% endif %}
+              </div>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+
+  </div>
+</main>
+
+<script>
+function toggleDetail(id, btn) {
+  const card = document.getElementById('detail-' + id);
+  const isVisible = card.classList.contains('visible');
+
+  document.querySelectorAll('.detail-card').forEach(el => el.classList.remove('visible'));
+  document.querySelectorAll('.spec-btn').forEach(el => el.classList.remove('active'));
+
+  if (!isVisible) {
+    card.classList.add('visible');
+    btn.classList.add('active');
+  }
+}
+</script>
+
+{% endblock %}

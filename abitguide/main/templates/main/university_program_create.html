@@ -1,0 +1,103 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Нова освітня програма — {{ uni.abbr }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  .content { margin-left: 180px; display: flex; justify-content: center; align-items: flex-start; height: 100vh; }
+  .login-card { margin-right: 25%; margin-top: -50px; width: 1000px; max-height: calc(100vh - 190px); background: rgba(255,220,160,0.70); border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.25); display: flex; flex-direction: column; overflow: hidden; }
+  .login-header { background: #e3a64b; height: 75px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; font-family: 'Oswald', sans-serif; font-size: 34px; font-weight: 600; color: #3a2a00; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+  .back-arrow { position: absolute; left: 24px; font-size: 32px; cursor: pointer; transition: 0.25s ease; color: #3a2a00; text-decoration: none; }
+  .back-arrow:hover { transform: translateX(-6px) scale(1.1); }
+  .login-body { padding: 35px 40px 25px 40px; overflow-y: auto; scrollbar-width: none; }
+  .login-body::-webkit-scrollbar { display: none; }
+  .form-row { display: flex; align-items: flex-start; margin-bottom: 15px; gap: 10px; }
+  .form-row label { width: 180px; flex-shrink: 0; font-family: 'Oswald', sans-serif; font-size: 26px; color: #2b1a00; padding-top: 12px; }
+  .form-row input, .form-row select { flex: 1; padding: 14px 20px; border-radius: 25px; border: none; background: #f2e7d5; font-family: 'Ubuntu Mono', monospace; font-size: 18px; line-height: 1.5; box-shadow: inset 0 3px 6px rgba(0,0,0,0.15); outline: none; }
+  .error-field { border: 2px solid red !important; background: #ffe5e5 !important; }
+  .error-text { font-family: 'Ubuntu Mono', monospace; color: red; font-size: 14px; margin-left: 190px; margin-bottom: 10px; margin-top: -8px; }
+  .save-btn { width: 100%; margin-top: 20px; margin-bottom: 10px; padding: 15px; border: none; border-radius: 20px; background: #2f5fa5; color: white; font-size: 24px; font-family: 'Oswald', sans-serif; cursor: pointer; transition: 0.2s ease; }
+  .save-btn:hover { filter: brightness(1.08); }
+  .custom-fields { display: none; flex-direction: column; }
+  .custom-fields.visible { display: flex; }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="content">
+  <div class="login-card">
+
+    <div class="login-header">
+      <a class="back-arrow" href="{% url 'university_programs' uni.slug %}">&#10094;</a>
+      Нова освітня програма {{ uni.abbr }}
+    </div>
+
+    <div class="login-body">
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="form-row">
+          <label>Галузь:</label>
+          <select name="letter" id="letter-select"
+                  class="{% if errors.letter %}error-field{% endif %}">
+            <option value="">Оберіть галузь</option>
+            <option value="A"     {% if data.letter == "A" %}selected{% endif %}>A: Освіта</option>
+            <option value="B"     {% if data.letter == "B" %}selected{% endif %}>B: Культура і мистецтво</option>
+            <option value="C"     {% if data.letter == "C" %}selected{% endif %}>C: Соціальні науки</option>
+            <option value="D"     {% if data.letter == "D" %}selected{% endif %}>D: Бізнес і право</option>
+            <option value="E"     {% if data.letter == "E" %}selected{% endif %}>E: Природничі науки</option>
+            <option value="F"     {% if data.letter == "F" %}selected{% endif %}>F: ІТ сфера</option>
+            <option value="G"     {% if data.letter == "G" %}selected{% endif %}>G: Інженерія</option>
+            <option value="H"     {% if data.letter == "H" %}selected{% endif %}>H: Сільське господарство</option>
+            <option value="I"     {% if data.letter == "I" %}selected{% endif %}>I: Соціальна сфера</option>
+            <option value="J"     {% if data.letter == "J" %}selected{% endif %}>J: Сфера послуг</option>
+            <option value="K"     {% if data.letter == "K" %}selected{% endif %}>K: Цивільна безпека</option>
+            <option value="S"     {% if data.letter == "S" %}selected{% endif %}>S: Соціальні та економічні науки</option>
+            <option value="OTHER" {% if data.letter == "OTHER" %}selected{% endif %}>Інше</option>
+          </select>
+        </div>
+        {% if errors.letter %}<div class="error-text">{{ errors.letter }}</div>{% endif %}
+
+        <div class="custom-fields {% if data.letter == 'OTHER' %}visible{% endif %}" id="custom-fields">
+          <div class="form-row">
+            <label>Буква:</label>
+            <input type="text" name="custom_letter"
+                   value="{{ data.custom_letter|default:'' }}"
+                   placeholder="Наприклад: L"
+                   maxlength="1"
+                   class="{% if errors.custom_letter %}error-field{% endif %}">
+          </div>
+          {% if errors.custom_letter %}<div class="error-text">{{ errors.custom_letter }}</div>{% endif %}
+
+          <div class="form-row">
+            <label>Назва:</label>
+            <input type="text" name="custom_name"
+                   value="{{ data.custom_name|default:'' }}"
+                   placeholder="Назва галузі"
+                   class="{% if errors.custom_name %}error-field{% endif %}">
+          </div>
+          {% if errors.custom_name %}<div class="error-text">{{ errors.custom_name }}</div>{% endif %}
+        </div>
+
+        <button type="submit" class="save-btn">ДОДАТИ</button>
+      </form>
+    </div>
+
+  </div>
+</main>
+
+<script>
+  const select = document.getElementById('letter-select');
+  const customFields = document.getElementById('custom-fields');
+
+  select.addEventListener('change', function () {
+    if (this.value === 'OTHER') {
+      customFields.classList.add('visible');
+    } else {
+      customFields.classList.remove('visible');
+    }
+  });
+</script>
+
+{% endblock %}

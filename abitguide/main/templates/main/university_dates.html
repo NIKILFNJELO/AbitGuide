@@ -1,0 +1,399 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Дати вступної кампанії {{ uni.abbr }}{% endblock %}
+
+{% block extra_css %}
+<style>
+
+.content {
+  margin-left: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100vh;
+}
+
+.dates-card {
+  margin-right: 25%;
+  margin-top: -50px;
+  width: 900px;
+  background: rgba(255, 220, 160, 0.70);
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  max-height: calc(100vh - 150px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.dates-card::-webkit-scrollbar { display: none; }
+
+.dates-header {
+  background: #e3a64b;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  font-family: 'Oswald', sans-serif;
+  font-size: 34px;
+  font-weight: 600;
+  color: #3a2a00;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.back-arrow {
+  position: absolute;
+  left: 27px;
+  font-size: 32px;
+  cursor: pointer;
+  transition: 0.25s ease;
+  color: #3a2a00;
+  text-decoration: none;
+}
+.back-arrow:hover { transform: translateX(-6px) scale(1.1); }
+
+.edit-btn {
+  position: absolute;
+  right: 27px;
+  font-size: 24px;
+  color: #3a2a00;
+  text-decoration: none;
+  transition: 0.25s ease;
+  opacity: 0.75;
+  bottom: 14px;
+}
+.edit-btn:hover { opacity: 1; transform: scale(1.15); }
+
+.dates-body {
+  padding: 25px 35px 35px 35px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.month-block {
+  display: flex;
+  gap: 0;
+  background: #f2e7d5;
+  border-radius: 25px;
+  overflow: hidden;
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.15);
+}
+
+.month-label {
+  background: rgba(227, 166, 75, 0.5);
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 10px;
+  font-family: 'Oswald', sans-serif;
+  font-size: 24px;
+  font-weight: 600;
+  color: #3a2a00;
+  text-align: center;
+  line-height: 1.3;
+  flex-direction: column;
+}
+
+.month-events {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-left: 2px solid rgba(227, 166, 75, 0.4);
+}
+
+.event-row {
+  padding: 12px 20px;
+  border-bottom: 1px solid rgba(227, 166, 75, 0.3);
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 20px;
+  line-height: 1.4;
+  color: rgba(43, 26, 0, 0.80);
+}
+.event-row:last-child { border-bottom: none; }
+
+.event-date {
+  font-weight: 700;
+  color: rgba(43, 26, 0, 1);
+  margin-bottom: 2px;
+}
+
+/* ===== 125% ===== */
+@media (max-width: 1280px) {
+  .edit-btn img {
+    width: 26px;
+    height: 26px;
+  }
+  .dates-card {
+    margin-right: 10%;
+    margin-top: -20px;
+    width: min(900px, 88%);
+  }
+  .dates-header {
+    height: 62px;
+    font-size: 28px;
+  }
+  .back-arrow {
+    font-size: 26px;
+  }
+  .dates-body {
+    padding: 16px 28px 20px 28px;
+  }
+  .month-label {
+    font-size: 20px;
+    min-width: 120px;
+  }
+  .event-row {
+    font-size: 16px;
+    padding: 10px 16px;
+  }
+}
+
+/* ===== 110% / Планшет ===== */
+@media (max-width: 1100px) {
+  .edit-btn img {
+    width: 22px;
+    height: 22px;
+  }
+  .content {
+    margin-left: 0;
+    height: auto;
+    min-height: 80vh;
+    padding: 20px 16px 40px;
+    align-items: flex-start;
+  }
+  .dates-card {
+    margin-right: 0;
+    margin-top: 0;
+    width: min(900px, 94%);
+    max-height: none;
+  }
+  .dates-header {
+    height: 56px;
+    font-size: 22px;
+  }
+  .back-arrow {
+    font-size: 20px;
+    left: 16px;
+  }
+  .edit-btn {
+    right: 16px;
+  }
+  .dates-body {
+    padding: 14px 20px 18px 20px;
+  }
+  .month-block {
+    border-radius: 18px;
+  }
+  .month-label {
+    font-size: 16px;
+    min-width: 100px;
+    padding: 16px 8px;
+  }
+  .event-row {
+    font-size: 14px;
+    padding: 10px 14px;
+  }
+}
+
+/* ===== Мобільний ===== */
+@media (max-width: 600px) {
+  .edit-btn img {
+    width: 20px;
+    height: 20px;
+  }
+  .content {
+    margin-left: 0;
+    padding: 10px 8px 20px;
+    justify-content: center;
+    height: auto;
+  }
+  .dates-card {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    border-radius: 12px;
+    box-shadow: none;
+    max-height: none;
+  }
+  .dates-header {
+    height: 50px;
+    font-size: 18px;
+  }
+  .back-arrow {
+    font-size: 18px;
+    left: 12px;
+  }
+  .edit-btn {
+    right: 12px;
+  }
+  .dates-body {
+    padding: 14px 14px 16px 14px;
+    gap: 12px;
+  }
+  .month-block {
+    flex-direction: column;
+    border-radius: 14px;
+  }
+  .month-label {
+    min-width: unset;
+    width: 100%;
+    font-size: 14px;
+    padding: 10px 14px;
+    flex-direction: row;
+    gap: 6px;
+  }
+  .month-events {
+    border-left: none;
+    border-top: 2px solid rgba(227, 166, 75, 0.4);
+  }
+  .event-row {
+    font-size: 13px;
+    padding: 10px 14px;
+  }
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="content">
+  <div class="dates-card">
+
+    <div class="dates-header">
+      <a class="back-arrow" href="/universities/{{ uni.slug }}/">&#10094;</a>
+      Дати вступної кампанії до {{ uni.abbr }}
+      {% if request.user.is_authenticated and request.user.profile.role == 'university_rep' and request.user.profile.university_slug == uni.slug %}
+        <a class="edit-btn" href="{% url 'university_dates_edit' slug=uni.slug %}" title="Редагувати">
+          <img src="{% static 'main/images/edit_icon.png' %}" alt="edit" width="32" height="32"
+               style="filter: brightness(0);">
+        </a>
+      {% endif %}
+    </div>
+
+    <div class="dates-body">
+
+      {% if dates and dates.get_july %}
+      <div class="month-block">
+        <div class="month-label">ЛИПЕНЬ</div>
+        <div class="month-events">
+          {% for row in dates.get_july %}
+          <div class="event-row">
+            <div class="event-date">{{ row.date }}</div>
+            {{ row.text }}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% if dates and dates.get_august %}
+      <div class="month-block">
+        <div class="month-label">СЕРПЕНЬ</div>
+        <div class="month-events">
+          {% for row in dates.get_august %}
+          <div class="event-row">
+            <div class="event-date">{{ row.date }}</div>
+            {{ row.text }}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% if dates and dates.get_sep_oct %}
+      <div class="month-block">
+        <div class="month-label">ВЕРЕСЕНЬ<br><br>|<br><br>ЖОВТЕНЬ</div>
+        <div class="month-events">
+          {% for row in dates.get_sep_oct %}
+          <div class="event-row">
+            <div class="event-date">{{ row.date }}</div>
+            {{ row.text }}
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+      {% endif %}
+
+      {% if not dates or not dates.get_july and not dates.get_august and not dates.get_sep_oct %}
+
+        <div class="month-block">
+          <div class="month-label">ЛИПЕНЬ</div>
+          <div class="month-events">
+            <div class="event-row">
+              <div class="event-date">з 1 липня по 20 жовтня</div>
+              Реєстрація електронних кабінетів вступників та завантаження документів
+            </div>
+            <div class="event-row">
+              <div class="event-date">з 3 липня по 10 липня (бюджет) / до 25 липня (контракт)</div>
+              Реєстрація заяв на співбесіди та творчі конкурси
+            </div>
+            <div class="event-row">
+              <div class="event-date">з 8 липня по 19 липня (бюджет) / до 01 серпня (контракт)</div>
+              Проведення співбесід і творчих конкурсів
+            </div>
+            <div class="event-row">
+              <div class="event-date">з 19 липня по 1 серпня</div>
+              Реєстрація заяв на конкурсний відбір (основна сесія)
+            </div>
+          </div>
+        </div>
+
+        <div class="month-block">
+          <div class="month-label">СЕРПЕНЬ</div>
+          <div class="month-events">
+            <div class="event-row">
+              <div class="event-date">не пізніше 6 серпня</div>
+              Оприлюднення списку рекомендованих засобами ЄДЕБO (основна сесія)
+            </div>
+            <div class="event-row">
+              <div class="event-date">до 18:00 11 серпня</div>
+              Виконання вимог до зарахування
+            </div>
+            <div class="event-row">
+              <div class="event-date">не пізніше 13 серпня</div>
+              Зарахування вступників, які отримали рекомендації та виконали вимоги
+            </div>
+            <div class="event-row">
+              <div class="event-date">з 14 серпня</div>
+              Надання рекомендацій на місця за кошти фізичних/юридичних осіб
+            </div>
+            <div class="event-row">
+              <div class="event-date">не пізніше 20 серпня</div>
+              Переведення на вакантні місця державного замовлення
+            </div>
+            <div class="event-row">
+              <div class="event-date">до 30 серпня</div>
+              Зарахування за кошти фізичних/юридичних осіб (основна сесія)
+            </div>
+          </div>
+        </div>
+
+        <div class="month-block">
+          <div class="month-label">ВЕРЕСЕНЬ<br><br>|<br><br>ЖОВТЕНЬ</div>
+          <div class="month-events">
+            <div class="event-row">
+              <div class="event-date">з 1 по 25 вересня</div>
+              Перша додаткова сесія реєстрації заяв (контракт)
+            </div>
+            <div class="event-row">
+              <div class="event-date">з 1 по 10 жовтня</div>
+              Друга додаткова сесія реєстрації заяв (контракт)
+            </div>
+            <div class="event-row">
+              <div class="event-date">не пізніше 15 жовтня</div>
+              Кінцеве зарахування
+            </div>
+          </div>
+        </div>
+
+      {% endif %}
+
+    </div>
+  </div>
+</main>
+
+{% endblock %}

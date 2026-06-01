@@ -1,0 +1,464 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Реєстрація{% endblock %}
+
+{% block extra_css %}
+<style>
+
+  .register-card {
+    position: fixed;
+    margin-right: 20%;
+    margin-top: -50px;
+    width: 700px;
+
+    background: rgba(255, 220, 160, 0.70);
+    border-radius: 20px;
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+  }
+
+  .register-header {
+    background: #e3a64b;
+    height: 75px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: 'Oswald', sans-serif;
+    font-size: 38px;
+    font-weight: 600;
+    color: #3a2a00;
+  }
+
+  .register-body {
+    padding: 35px 40px 25px 40px;
+  }
+
+  .form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 10px;
+  }
+
+  .form-row label {
+    width: 180px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 26px;
+    color: #2b1a00;
+  }
+
+  .form-row input,
+  .form-row select {
+    flex: 1;
+    padding: 14px 20px;
+
+    border-radius: 25px;
+    border: none;
+
+    background: #f2e7d5;
+
+    font-family: 'Ubuntu Mono', monospace;
+    font-size: 20px;
+
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.15);
+  }
+
+  .error-field {
+    border: 2px solid red !important;
+    background: #ffe5e5 !important;
+  }
+
+  .error-text {
+    font-family: 'Ubuntu Mono', monospace;
+    color: red;
+    font-size: 14px;
+    margin-left: 190px;
+    margin-bottom: 10px;
+  }
+
+  .id-wrapper {
+    display: flex;
+    gap: 10px;
+    width: 70%;
+  }
+
+  .id-prefix {
+    width: 70px;
+    text-align: center;
+  }
+
+  .id-input {
+    max-width: 350px;
+  }
+
+  .register-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 15px;
+
+    border: none;
+    border-radius: 20px;
+
+    background: #f08c42;
+    color: white;
+
+    font-size: 24px;
+    font-family: 'Oswald', sans-serif;
+
+    cursor: pointer;
+  }
+
+  .content {
+    margin-left: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+  }
+
+  .auth-links {
+    text-align: right;
+    margin-top: -5px;
+
+    font-family: 'Oswald', sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    text-decoration: none;
+
+    color: #2b1a00;
+  }
+
+  .auth-links a {
+    font-family: 'Oswald', sans-serif;
+    font-size: 22px;
+    font-weight: 500;
+
+    color: #2f5fa5;
+    text-decoration: none;
+
+    transition: 0.2s ease;
+  }
+
+  .auth-links a:hover {
+    text-decoration: underline;
+    transform: translateY(-1px);
+  }
+
+  .auth-links a {
+    text-decoration: none !important;
+  }
+
+  .password-wrapper {
+    flex: 1;
+    position: relative;
+  }
+
+  .password-wrapper input {
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 50px;
+  }
+
+  .toggle-eye {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+
+  .toggle-eye:hover {
+    opacity: 1;
+  }
+
+  /* ===== 125% ===== */
+  @media (max-width: 1280px) {
+    .register-card {
+      margin-right: 10%;
+      margin-top: -20px;
+      width: min(700px, 88%);
+    }
+    .register-header {
+      height: 62px;
+      font-size: 28px;
+    }
+    .register-body {
+      padding: 16px 28px 20px 28px;
+    }
+    .form-row label {
+      font-size: 20px;
+    }
+    .form-row input,
+    .form-row select {
+      font-size: 16px;
+      padding: 10px 16px;
+    }
+    .auth-links,
+    .auth-links a {
+      font-size: 18px;
+    }
+  }
+
+  /* ===== 110% / планшет ===== */
+  @media (max-width: 1100px) {
+    .content {
+      margin-left: 0;
+      height: auto;
+      min-height: 80vh;
+      padding: 20px 16px 40px;
+      align-items: flex-start;
+    }
+    .register-card {
+      position: static;
+      margin-right: 0;
+      margin-top: 0;
+      width: min(700px, 94%);
+    }
+    .register-header {
+      height: 56px;
+      font-size: 22px;
+    }
+    .register-body {
+      padding: 14px 20px 18px 20px;
+    }
+    .form-row label {
+      font-size: 17px;
+      width: 140px;
+    }
+    .form-row input,
+    .form-row select {
+      font-size: 14px;
+      padding: 9px 14px;
+    }
+    .error-text {
+      margin-left: 150px;
+      font-size: 12px;
+    }
+    .auth-links,
+    .auth-links a {
+      font-size: 15px;
+    }
+    .register-btn {
+      font-size: 18px;
+      padding: 12px;
+    }
+  }
+
+  /* ===== Мобільний ===== */
+  @media (max-width: 600px) {
+    .content {
+      margin-left: 0;
+      padding: 10px 8px 20px;
+      justify-content: center;
+    }
+    .register-card {
+      position: static;
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      border-radius: 12px;
+      box-shadow: none;
+      box-sizing: border-box;
+    }
+    .register-header {
+      height: 50px;
+      font-size: 18px;
+    }
+    .register-body {
+      padding: 12px 14px 16px 14px;
+      overflow: hidden;
+    }
+    .form-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .form-row label {
+      font-size: 15px;
+      width: auto;
+    }
+    .form-row input,
+    .form-row select {
+      font-size: 13px;
+      padding: 8px 12px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .password-wrapper {
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .id-wrapper {
+      width: 100%;
+    }
+    .error-text {
+      margin-left: 0;
+      font-size: 12px;
+    }
+    .auth-links,
+    .auth-links a {
+      font-size: 13px;
+    }
+    .register-btn {
+      font-size: 16px;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+  }
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<main class="content">
+
+  <div class="register-card">
+
+    <div class="register-header">
+      РЕЄСТРАЦІЯ
+    </div>
+
+    <div class="register-body">
+
+      <form method="post">
+        {% csrf_token %}
+
+        <!-- ПІБ -->
+        <div class="form-row">
+          <label>ПІБ:</label>
+          <div class="password-wrapper">
+            <input type="text" name="full_name"
+                   placeholder="Введіть прізвище, ім'я та по батькові"
+                   value="{{ data.full_name }}"
+                   class="{% if errors.full_name %}error-field{% endif %}">
+          </div>
+        </div>
+        {% if errors.full_name %}
+          <div class="error-text">{{ errors.full_name }}</div>
+        {% endif %}
+
+        <!-- Email -->
+        <div class="form-row">
+          <label>Email:</label>
+          <div class="password-wrapper">
+            <input type="text" name="email"
+                   placeholder="example@gmail.com"
+                   value="{{ data.email }}"
+                   class="{% if errors.email %}error-field{% endif %}">
+          </div>
+        </div>
+        {% if errors.email %}
+          <div class="error-text">{{ errors.email }}</div>
+        {% endif %}
+
+        <!-- Пароль -->
+        <div class="form-row">
+          <label>Пароль:</label>
+          <div class="password-wrapper">
+            <input type="password" name="password" id="passwordInput"
+                   placeholder="Введіть пароль"
+                   class="{% if errors.password %}error-field{% endif %}">
+            <img id="eyeIcon"
+                 src="{% static 'main/images/eye_open.png' %}"
+                 class="toggle-eye"
+                 onclick="togglePassword()">
+          </div>
+        </div>
+        {% if errors.password %}
+          <div class="error-text">{{ errors.password }}</div>
+        {% endif %}
+
+        <!-- Роль -->
+        <div class="form-row">
+          <label>Cтатус:</label>
+          <select name="role" id="roleSelect">
+            <option disabled selected>Оберіть статус</option>
+            <option value="applicant" {% if data.role == "applicant" %}selected{% endif %}>Абітурієнт</option>
+            <option value="parent" {% if data.role == "parent" %}selected{% endif %}>Батьки</option>
+            <option value="university_rep" {% if data.role == "university_rep" %}selected{% endif %}>Працівник ЗВО</option>
+          </select>
+        </div>
+        {% if errors.role %}
+          <div class="error-text">{{ errors.role }}</div>
+        {% endif %}
+
+        <!-- Посвідчення -->
+        <div class="form-row" id="idNumberRow" style="display: none;">
+          <label>Посвідчення:</label>
+
+          <div class="id-wrapper">
+            <input type="text" name="id_prefix"
+                   placeholder="Шифр ЗВО"
+                   class="id-prefix {% if errors.id_prefix %}error-field{% endif %}"
+                   value="{{ request.POST.id_prefix }}">
+
+            <input type="text" name="id_number"
+                   placeholder="1234567891012"
+                   class="id-input {% if errors.id_number %}error-field{% endif %}"
+                   value="{{ request.POST.id_number }}">
+          </div>
+        </div>
+
+        {% if errors.id_prefix %}
+          <div class="error-text">{{ errors.id_prefix }}</div>
+        {% endif %}
+
+        {% if errors.id_number %}
+          <div class="error-text">{{ errors.id_number }}</div>
+        {% endif %}
+
+        <div class="auth-links">
+          Уже маєте обліковий запис?
+          <a href="{% url 'login' %}">Увійти</a>
+        </div>
+
+        <button type="submit" class="register-btn">ЗАРЕЄСТРУВАТИСЯ</button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  const roleSelect = document.getElementById("roleSelect");
+  const idRow = document.getElementById("idNumberRow");
+
+  function toggleIdField() {
+    if (roleSelect.value === "university_rep") {
+      idRow.style.display = "flex";
+    } else {
+      idRow.style.display = "none";
+    }
+  }
+
+  toggleIdField();
+  roleSelect.addEventListener("change", toggleIdField);
+});
+
+function togglePassword() {
+  const input = document.getElementById('passwordInput');
+  const icon = document.getElementById('eyeIcon');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.src = "{% static 'main/images/eye_closed.png' %}";
+  } else {
+    input.type = 'password';
+    icon.src = "{% static 'main/images/eye_open.png' %}";
+  }
+}
+</script>
+
+{% endblock %}

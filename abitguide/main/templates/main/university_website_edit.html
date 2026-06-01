@@ -1,0 +1,205 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Редагування сайту {{ uni.abbr }}{% endblock %}
+
+{% block extra_css %}
+<style>
+
+  .content {
+    margin-left: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+  }
+
+  .login-card {
+    margin-right: 25%;
+    margin-top: -50px;
+    width: 1000px;
+    max-height: calc(100vh - 190px);
+
+    background: rgba(255, 220, 160, 0.70);
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .login-header {
+    background: #e3a64b;
+    height: 75px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    font-family: 'Oswald', sans-serif;
+    font-size: 34px;
+    font-weight: 600;
+    color: #3a2a00;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+
+  .back-arrow {
+    position: absolute;
+    left: 24px;
+    font-size: 32px;
+    cursor: pointer;
+    transition: 0.25s ease;
+    color: #3a2a00;
+    text-decoration: none;
+  }
+  .back-arrow:hover { transform: translateX(-6px) scale(1.1); }
+
+  .login-body {
+    padding: 35px 40px 25px 40px;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .login-body::-webkit-scrollbar { display: none; }
+
+  .form-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    gap: 10px;
+  }
+
+  .form-row label {
+    width: 180px;
+    flex-shrink: 0;
+    font-family: 'Oswald', sans-serif;
+    font-size: 26px;
+    color: #2b1a00;
+    padding-top: 12px;
+  }
+
+  .form-row input {
+    flex: 1;
+    padding: 14px 20px;
+    border-radius: 25px;
+    border: none;
+    background: #f2e7d5;
+    font-family: 'Ubuntu Mono', monospace;
+    font-size: 18px;
+    line-height: 1.5;
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.15);
+    outline: none;
+  }
+
+  .error-field {
+    border: 2px solid red !important;
+    background: #ffe5e5 !important;
+  }
+
+  .error-text {
+    font-family: 'Ubuntu Mono', monospace;
+    color: red;
+    font-size: 14px;
+    margin-left: 190px;
+    margin-bottom: 10px;
+    margin-top: -8px;
+  }
+
+  .preview-box {
+    margin-left: 190px;
+    margin-bottom: 16px;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    max-width: 500px;
+  }
+
+  .preview-box img {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+  }
+
+  .save-btn {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding: 15px;
+    border: none;
+    border-radius: 20px;
+    background: #2f5fa5;
+    color: white;
+    font-size: 24px;
+    font-family: 'Oswald', sans-serif;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+  .save-btn:hover { filter: brightness(1.08); }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="content">
+  <div class="login-card">
+
+    <div class="login-header">
+      <a class="back-arrow" href="{% url 'university_website' slug=uni.slug %}">&#10094;</a>
+      Редагування для сайту {{ uni.abbr }}
+    </div>
+
+    <div class="login-body">
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="form-row">
+          <label>URL сайту:</label>
+          <input type="url" name="site_url"
+                 value="{{ website.site_url|default:'' }}"
+                 placeholder="https://www.university.edu.ua/"
+                 class="{% if errors.site_url %}error-field{% endif %}">
+        </div>
+        {% if errors.site_url %}<div class="error-text">{{ errors.site_url }}</div>{% endif %}
+
+        <div class="form-row">
+          <label>URL зображення:</label>
+          <input type="url" name="image_url" id="image_url_input"
+                 value="{{ website.image_url|default:'' }}"
+                 placeholder="https://example.com/image.jpg"
+                 oninput="updatePreview(this.value)"
+                 class="{% if errors.image_url %}error-field{% endif %}">
+        </div>
+        {% if errors.image_url %}<div class="error-text">{{ errors.image_url }}</div>{% endif %}
+
+        <div class="preview-box" id="preview-box" style="{% if not website or not website.image_url %}display:none{% endif %}">
+          <img id="preview-img"
+               src="{% if website and website.image_url %}{{ website.image_url }}{% endif %}"
+               alt="Превью">
+        </div>
+
+        <button type="submit" class="save-btn">ЗБЕРЕГТИ ЗМІНИ</button>
+
+      </form>
+    </div>
+
+  </div>
+</main>
+
+<script>
+function updatePreview(url) {
+  const box = document.getElementById('preview-box');
+  const img = document.getElementById('preview-img');
+  if (url) {
+    img.src = url;
+    box.style.display = 'block';
+  } else {
+    box.style.display = 'none';
+  }
+}
+</script>
+
+{% endblock %}

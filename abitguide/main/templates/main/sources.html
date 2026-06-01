@@ -1,0 +1,242 @@
+{% extends 'main/base.html' %}
+
+{% block title %}Офіційні джерела{% endblock %}
+
+{% block extra_css %}
+<style>
+
+  .sources-card {
+    margin-right: 25%;
+    margin-top: -50px;
+    width: 900px;
+
+    background: rgba(255, 220, 160, 0.70);
+    border-radius: 20px;
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+  }
+
+  .sources-header {
+    background: #e3a64b;
+    height: 75px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    font-family: 'Oswald', sans-serif;
+    font-size: 38px;
+    font-weight: 600;
+    color: #3a2a00;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+
+  .back-arrow {
+    position: absolute;
+    left: 27px;
+    font-size: 32px;
+    cursor: pointer;
+    transition: 0.25s ease;
+  }
+
+  .back-arrow:hover {
+    transform: translateX(-6px) scale(1.1);
+  }
+
+  .sources-body {
+    padding: 20px 40px 25px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .sources-description {
+    font-family: 'Ubuntu Mono', monospace;
+    font-size: 22px;
+    text-align: left;
+    color: rgba(0, 0, 0, 0.75);
+    font-weight: 700;
+  }
+
+  .sources-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+  }
+
+  .sources-grid a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 55px;
+
+    background: #f2e7d5;
+    border-radius: 25px;
+
+    text-decoration: none;
+    font-family: 'Ubuntu Mono', monospace;
+    font-size: 22px;
+    color: rgba(43, 26, 0, 0.75);
+
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.15);
+    transition: 0.2s ease;
+  }
+
+  .sources-grid a:hover {
+    transform: translateY(-2px);
+    filter: brightness(1.05);
+    background: rgba(255, 220, 140, 0.95);
+  }
+
+  .content {
+    margin-left: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+  }
+
+  /* ===== 125% ===== */
+  @media (max-width: 1280px) {
+    .sources-card {
+      margin-right: 10%;
+      margin-top: -20px;
+      width: min(800px, 88%);
+    }
+    .sources-header {
+      height: 62px;
+      font-size: 28px;
+    }
+    .back-arrow {
+      font-size: 26px;
+    }
+    .sources-body {
+      padding: 16px 28px 20px 28px;
+      gap: 16px;
+    }
+    .sources-description {
+      font-size: 18px;
+    }
+    .sources-grid a {
+      font-size: 18px;
+      min-height: 46px;
+    }
+  }
+
+  /* ===== 110% / планшет ===== */
+  @media (max-width: 1100px) {
+    .content {
+      margin-left: 0;
+      height: auto;
+      min-height: 80vh;
+      padding: 20px 16px 40px;
+      align-items: flex-start;
+    }
+    .sources-card {
+      margin-right: 0;
+      margin-top: 0;
+      width: min(800px, 94%);
+    }
+    .sources-header {
+      height: 56px;
+      font-size: 22px;
+    }
+    .back-arrow {
+      font-size: 20px;
+      left: 16px;
+    }
+    .sources-body {
+      padding: 14px 20px 18px 20px;
+      gap: 14px;
+    }
+    .sources-description {
+      font-size: 15px;
+    }
+    .sources-grid {
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .sources-grid a {
+      font-size: 15px;
+      min-height: 40px;
+      border-radius: 18px;
+    }
+  }
+
+  /* ===== Мобільний ===== */
+  @media (max-width: 600px) {
+    .sources-card {
+      width: 96%;
+      border-radius: 14px;
+    }
+    .sources-header {
+      height: 50px;
+      font-size: 18px;
+    }
+    .sources-body {
+      padding: 12px 14px 16px 14px;
+      gap: 12px;
+    }
+    .sources-description {
+      font-size: 13px;
+    }
+    .sources-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .sources-grid a {
+      font-size: 13px;
+      min-height: 36px;
+      border-radius: 14px;
+    }
+  }
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<main class="content">
+
+  <div class="sources-card">
+
+    <div class="sources-header">
+      <span class="back-arrow" onclick="goBack()">&#10094;</span>
+      ОФІЦІЙНІ ДЖЕРЕЛА
+    </div>
+
+    <div class="sources-body">
+
+      <div class="sources-description">
+        Інформація на сайті базується на офіційних ресурсах університетів
+        та перевірених освітніх платформах
+      </div>
+
+      <div class="sources-grid">
+        <a href="https://vstup.edbo.gov.ua/" target="_blank">ЄДБО</a>
+        <a href="https://mon.gov.ua/" target="_blank">МОН</a>
+        <a href="https://vstup.osvita.ua/" target="_blank">ВСТУП</a>
+        <a href="https://www.hneu.edu.ua/" target="_blank">ХНЕУ</a>
+        <a href="https://nure.ua/" target="_blank">ХНУРЕ</a>
+        <a href="https://www.kpi.kharkov.ua/" target="_blank">ХПІ</a>
+        <a href="https://karazin.ua/" target="_blank">Каразіна</a>
+        <a href="https://www.kname.edu.ua/" target="_blank">ХНУМГ</a>
+      </div>
+
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+function goBack() { 
+  window.location.href = "{% url 'home' %}";  
+  }
+</script>
+
+{% endblock %}

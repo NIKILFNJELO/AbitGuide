@@ -1,0 +1,226 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Контакти{% endblock %}
+
+{% block extra_css %}
+<style>
+
+  .contacts-card {
+    margin-right: 25%;
+    margin-top: -50px;
+    width: 900px;
+
+    background: rgba(255, 220, 160, 0.70);
+    border-radius: 20px;
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+  }
+
+  .contacts-header {
+    background: #e3a64b;
+    height: 75px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    font-family: 'Oswald', sans-serif;
+    font-size: 38px;
+    font-weight: 600;
+    color: #3a2a00;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+
+  .back-arrow {
+    position: absolute;
+    left: 24px;
+    font-size: 32px;
+    cursor: pointer;
+    transition: 0.25s ease;
+  }
+
+  .back-arrow:hover {
+    transform: translateX(-6px) scale(1.1);
+  }
+
+  .contacts-body {
+    padding: 20px 40px 25px 40px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 30px;
+  }
+
+  .contacts-photo {
+    width: 160px;
+    height: 160px;
+    flex-shrink: 0;
+
+    object-fit: cover;
+    border-radius: 14px;
+    border: 4px solid white;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+  }
+
+  .contacts-text {
+    flex: 1;
+    font-family: 'Ubuntu Mono', monospace;
+    font-size: 22px;
+    color: rgba(0, 0, 0, 0.75);
+    line-height: 1.8;
+  }
+
+  .contacts-text p {
+    margin: 0;
+  }
+
+  .content {
+    margin-left: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+  }
+
+  /* ===== 125% ===== */
+  @media (max-width: 1280px) {
+    .contacts-card {
+      margin-right: 10%;
+      margin-top: -20px;
+      width: min(800px, 88%);
+    }
+    .contacts-header {
+      height: 62px;
+      font-size: 28px;
+    }
+    .back-arrow {
+      font-size: 26px;
+    }
+    .contacts-body {
+      padding: 16px 28px 20px 28px;
+      gap: 22px;
+    }
+    .contacts-photo {
+      width: 130px;
+      height: 130px;
+    }
+    .contacts-text {
+      font-size: 18px;
+    }
+  }
+
+  /* ===== 110% / планшет ===== */
+  @media (max-width: 1100px) {
+    .content {
+      margin-left: 0;
+      height: auto;
+      min-height: 80vh;
+      padding: 20px 16px 40px;
+      align-items: flex-start;
+    }
+    .contacts-card {
+      margin-right: 0;
+      margin-top: 0;
+      width: min(800px, 94%);
+    }
+    .contacts-header {
+      height: 56px;
+      font-size: 22px;
+    }
+    .back-arrow {
+      font-size: 20px;
+      left: 16px;
+    }
+    .contacts-body {
+      padding: 14px 20px 18px 20px;
+      gap: 18px;
+    }
+    .contacts-photo {
+      width: 110px;
+      height: 110px;
+    }
+    .contacts-text {
+      font-size: 15px;
+      line-height: 1.6;
+    }
+  }
+
+  /* ===== Мобільний ===== */
+  @media (max-width: 600px) {
+    .content {
+      margin-left: 0;
+      padding: 10px 8px 20px;
+      justify-content: center;
+    }
+    .contacts-card {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      border-radius: 12px;
+      box-shadow: none;
+    }
+    .contacts-header {
+      height: 50px;
+      font-size: 18px;
+    }
+    .contacts-body {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+      padding: 12px 14px 16px 14px;
+    }
+    .contacts-photo {
+      width: 90px;
+      height: 90px;
+      border-radius: 10px;
+    }
+    .contacts-text {
+      font-size: 13px;
+      line-height: 1.5;
+    }
+  }
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<main class="content">
+
+  <div class="contacts-card">
+
+    <div class="contacts-header">
+      <span class="back-arrow" onclick="goBack()">&#10094;</span>
+      КОНТАКТИ
+    </div>
+
+    <div class="contacts-body">
+
+      <img src="{% static 'main/images/developer.jpg' %}" class="contacts-photo">
+
+      <div class="contacts-text">
+        <p>
+          <strong>Розробник веб-застосунку:</strong><br>
+          Буман Микита Олександрович<br>
+          Студент групи 6.04.122.010.22.1, 4 курсу,<br>
+          факультету IT-технологій, ХНЕУ ім. С. Кузнеця
+        </p>
+      </div>
+
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+function goBack() {
+   window.location.href = "{% url 'home' %}";  
+  }
+</script>
+
+{% endblock %}

@@ -1,0 +1,483 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Перелік освітніх програм {{ uni_short_name }}{% endblock %}
+
+{% block extra_css %}
+<style>
+
+body { overflow-x: hidden; }
+
+.content {
+  margin-left: 95px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100vh;
+  gap: 50px;
+  box-sizing: border-box;
+  overflow: hidden;
+}
+
+/* ====== ЛІВА КОЛОНКА ====== */
+.left-col {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin-top: -50px;
+  flex: 1 1 0;
+  min-width: 0;
+  max-height: calc(85vh - 70px);
+  overflow: hidden;
+  padding-bottom: 10px;
+}
+
+/* ====== ЛІВИЙ БЛОК ====== */
+.uni-card-big {
+  width: 100%;
+  background: rgba(255, 220, 160, 0.70);
+  border-radius: 20px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.uni-header {
+  background: #e3a64b;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(20px, 2vw, 38px);
+  font-weight: 600;
+  color: #3a2a00;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  padding: 0 60px;
+  text-align: center;
+}
+
+.back-arrow {
+  position: absolute;
+  left: 27px;
+  font-size: 32px;
+  cursor: pointer;
+  transition: 0.25s ease;
+  color: #3a2a00;
+  text-decoration: none;
+}
+.back-arrow:hover { transform: translateX(-6px) scale(1.1); }
+
+.uni-body {
+  padding: 30px 40px 25px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.top-row, .bottom-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+}
+
+/* ====== КНОПКИ ШИФРІВ ====== */
+.uni-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 52px;
+  border-radius: 25px;
+  padding: 8px 22px;
+  min-width: 150px;
+  max-width: 380px;
+  text-align: center;
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: clamp(14px, 1.4vw, 22px);
+  line-height: 1.3;
+  color: rgba(43, 26, 0, 0.85);
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-decoration: none;
+  white-space: nowrap;
+  font-weight: 100;
+  background: var(--btn-bg, #f2e7d5);
+
+}
+.uni-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.06);
+  background: rgba(255, 220, 140, 0.95) !important;
+}
+
+/* ====== БЛОК РЕКОМЕНДАЦІЙ ====== */
+.rec-card {
+  width: 100%;
+  background: rgba(255, 220, 160, 0.70);
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  flex-shrink: 1;
+  display: none;
+  flex-direction: column;
+  min-height: 0;
+}
+.rec-card.visible {
+  display: flex;
+}
+
+.rec-header {
+  background: #e3a64b;
+  height: 75px;
+  min-height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(20px, 2vw, 38px);
+  font-weight: 600;
+  color: #3a2a00;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  flex-shrink: 0;
+}
+
+.rec-body {
+  padding: 14px 22px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  min-height: 0;
+}
+.rec-body::-webkit-scrollbar { display: none; }
+
+.rec-meta-top {
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: clamp(11px, 0.9vw, 14px);
+  color: rgba(43, 26, 0, 0.55);
+  margin-bottom: 4px;
+  flex-shrink: 0;
+}
+
+.rec-item {
+  background: rgba(242, 231, 213, 0.80);
+  border-radius: 14px;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.rec-item-header {
+  padding: 11px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.rec-item-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(15px, 1.4vw, 20px);
+  font-weight: 600;
+  color: rgba(43, 26, 0, 0.90);
+}
+
+.rec-item-body {
+  display: none;
+  padding: 12px 18px 16px;
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: clamp(13px, 1vw, 17px);
+  color: rgba(43, 26, 0, 0.82);
+  line-height: 1.65;
+  border-top: 1px solid rgba(200, 160, 80, 0.30);
+}
+.rec-item.open .rec-item-body { display: block; }
+
+.rec-summary { margin-bottom: 10px; }
+
+.rec-specs-label {
+  font-weight: 700;
+  color: rgba(43, 26, 0, 1);
+  display: block;
+  margin-bottom: 5px;
+}
+
+.rec-specs-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.rec-specs-list li {
+  padding-left: 14px;
+  position: relative;
+  font-size: clamp(12px, 0.95vw, 16px);
+}
+
+/* ====== КАЛЬКУЛЯТОР ====== */
+.calc-card {
+  margin-top: -50px;
+  flex-shrink: 0;
+  width: clamp(280px, 26vw, 500px);
+  background: rgba(255, 220, 160, 0.70);
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  align-self: flex-start;
+}
+
+.calc-header {
+  background: #e3a64b;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(20px, 2vw, 38px);
+  font-weight: 600;
+  color: #3a2a00;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.calc-body {
+  padding: 22px 22px 26px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.calc-body form { display: flex; flex-direction: column; gap: 10px; }
+
+.form-row { display: flex; align-items: center; gap: 10px; }
+.form-row label {
+  width: clamp(110px, 9vw, 180px);
+  flex-shrink: 0;
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(15px, 1.4vw, 26px);
+  color: #2b1a00;
+}
+
+.form-row input,
+.form-row select {
+  flex: 1;
+  padding: clamp(8px, 0.8vw, 14px) 14px;
+  border-radius: 25px;
+  border: none;
+  background: #f2e7d5;
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: clamp(13px, 1.1vw, 20px);
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.15);
+  outline: none;
+  min-width: 0;
+  text-align: center;
+}
+.form-row select { text-align: left; }
+
+.error-field { border: 2px solid red !important; background: #ffe5e5 !important; }
+.error-text {
+  font-family: 'Ubuntu Mono', monospace;
+  color: red;
+  font-size: 13px;
+  margin-left: clamp(120px, 10vw, 190px);
+  margin-top: -6px;
+}
+
+.avg-row { display: flex; align-items: center; gap: 10px; margin-top: 4px; }
+.avg-row label {
+  width: clamp(110px, 9vw, 180px);
+  flex-shrink: 0;
+  font-family: 'Oswald', sans-serif;
+  font-size: clamp(15px, 1.4vw, 26px);
+  color: #2b1a00;
+}
+.avg-value {
+  flex: 1;
+  padding: clamp(8px, 0.8vw, 14px) 14px;
+  border-radius: 25px;
+  background: #f2e7d5;
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: clamp(13px, 1.1vw, 20px);
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.15);
+  color: #7a4800;
+  font-weight: bold;
+  text-align: center;
+}
+
+.calc-btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: clamp(10px, 1vw, 15px);
+  border: none;
+  border-radius: 20px;
+  background: #2f5fa5;
+  color: white;
+  font-size: clamp(16px, 1.5vw, 24px);
+  font-family: 'Oswald', sans-serif;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.calc-btn:hover { 
+    filter: brightness(1.1); 
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="content">
+
+  <div class="left-col">
+
+    <div class="uni-card-big">
+      <div class="uni-header">
+        <a class="back-arrow" href="{% url 'university_detail' uni.slug %}">&#10094;</a>
+        Перелік освітніх програм університету {{ uni_short_name }}
+      </div>
+      <div class="uni-body">
+        <div class="top-row">
+  {% for btn in btn_list %}
+    {% if forloop.counter <= 5 %}
+      <a class="uni-btn" href="{% url 'university_programs_letter' uni.slug btn.letter %}"
+         style="background: {{ btn.color }};">{{ btn.label }}</a>
+    {% endif %}
+  {% endfor %}
+</div>
+<div class="bottom-row">
+  {% for btn in btn_list %}
+    {% if forloop.counter > 5 %}
+      <a class="uni-btn" href="{% url 'university_programs_letter' uni.slug btn.letter %}"
+         style="background: {{ btn.color }};">{{ btn.label }}</a>
+    {% endif %}
+  {% endfor %}
+</div>
+
+      {% if request.user.is_authenticated and request.user.profile.role == 'university_rep' and request.user.profile.university_slug == uni.slug %}
+        <a href="{% url 'university_program_create' slug=uni.slug %}" class="uni-btn" 
+           style="border: 2px dashed rgba(43,26,0,0.4); text-decoration: none;">
+          + Додати освітню програму
+        </a>
+      {% endif %}
+
+      </div>
+    </div>
+
+    {% if show_rec %}
+    <div class="rec-card visible">
+      <div class="rec-header">Сформовані рекомендації</div>
+      <div class="rec-body">
+
+        <div class="rec-meta-top">
+          Дата: {{ now_date }} &nbsp;|&nbsp; Час: {{ now_time }} &nbsp;|&nbsp;
+          Університет: {{ uni_short_name }} &nbsp;|&nbsp;
+          Середній бал НМТ: <strong>{{ avg }}</strong>
+        </div>
+
+        {% for rec in recs %}
+        <div class="rec-item" id="rec-{{ rec.letter }}">
+          <div class="rec-item-header"
+               style="background: {{ rec.btn_color }};"
+               onclick="toggleRec('rec-{{ rec.letter }}')">
+            <span class="rec-item-title">{{ rec.label }}</span>
+          </div>
+          <div class="rec-item-body">
+            <p class="rec-summary">{{ rec.summary }}</p>
+            <span class="rec-specs-label">
+              Спеціальності ({{ rec.count_fit }} з {{ rec.count_total }} підходять):
+            </span>
+            <ul class="rec-specs-list">
+              {% for name, status in rec.specs_with_status %}
+                <li>{{ name }}</li>
+              {% endfor %}
+            </ul>
+          </div>
+        </div>
+        {% endfor %}
+ 
+        <form method="post" action="{% url 'save_recommendation' %}">
+          {% csrf_token %}
+          <input type="hidden" name="avg" value="{{ avg }}">
+          <input type="hidden" name="university" value="{{ uni_short_name }}">
+          <input type="hidden" name="fitting_specs" value="{{ fitting_specs_json }}">
+          <button type="submit" class="calc-btn">ЗБЕРЕГТИ РЕКОМЕНДАЦІЇ</button>
+        </form>
+ 
+      </div>
+    </div>
+    {% endif %}
+
+  </div>  <!-- кінець left-col -->
+
+  <div class="calc-card">
+    <div class="calc-header">Калькулятор балів</div>
+    <div class="calc-body">
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="form-row">
+          <label>Укр. мова:</label>
+          <input type="number" name="score_ukr" placeholder="100–200"
+                 value="{{ data.score_ukr|default:'' }}"
+                 class="{% if errors.score_ukr %}error-field{% endif %}">
+        </div>
+        {% if errors.score_ukr %}<div class="error-text">{{ errors.score_ukr }}</div>{% endif %}
+
+        <div class="form-row">
+          <label>Математика:</label>
+          <input type="number" name="score_math" placeholder="100–200"
+                 value="{{ data.score_math|default:'' }}"
+                 class="{% if errors.score_math %}error-field{% endif %}">
+        </div>
+        {% if errors.score_math %}<div class="error-text">{{ errors.score_math }}</div>{% endif %}
+
+        <div class="form-row">
+          <label>Історія:</label>
+          <input type="number" name="score_history" placeholder="100–200"
+                 value="{{ data.score_history|default:'' }}"
+                 class="{% if errors.score_history %}error-field{% endif %}">
+        </div>
+        {% if errors.score_history %}<div class="error-text">{{ errors.score_history }}</div>{% endif %}
+
+        <div class="form-row">
+          <label>На вибір:</label>
+          <select name="subject_choice">
+            <option value="">Оберіть предмет</option>
+            <option {% if data.subject_choice == 'Українська література' %}selected{% endif %}>Українська література</option>
+            <option {% if data.subject_choice == 'Іноземна мова' %}selected{% endif %}>Іноземна мова</option>
+            <option {% if data.subject_choice == 'Біологія' %}selected{% endif %}>Біологія</option>
+            <option {% if data.subject_choice == 'Фізика' %}selected{% endif %}>Фізика</option>
+            <option {% if data.subject_choice == 'Хімія' %}selected{% endif %}>Хімія</option>
+            <option {% if data.subject_choice == 'Географія' %}selected{% endif %}>Географія</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label>Оцінка:</label>
+          <input type="number" name="score_choice" placeholder="100–200"
+                 value="{{ data.score_choice|default:'' }}"
+                 class="{% if errors.score_choice %}error-field{% endif %}">
+        </div>
+        {% if errors.score_choice %}<div class="error-text">{{ errors.score_choice }}</div>{% endif %}
+
+        <div class="avg-row">
+          <label>Середнє:</label>
+          <span class="avg-value">{% if avg %}{{ avg }}{% else %}···{% endif %}</span>
+        </div>
+
+        <button type="submit" class="calc-btn">СФОРМУВАТИ РЕКОМЕНДАЦІЇ</button>
+      </form>
+    </div>
+  </div>
+
+</main>
+
+<script>
+function toggleRec(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+</script>
+
+{% endblock %}

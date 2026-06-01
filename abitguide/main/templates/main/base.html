@@ -1,0 +1,335 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}АбітГід{% endblock %}</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600&family=Ubuntu+Mono&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Nunito:wght@300;400;600;700&family=Rubik:wght@300;400;500;600;700&family=Work+Sans:wght@300;400;500;600;700&family=Manrope:wght@300;400;500;600;700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'main/css/variables.css' %}">
+  <link rel="stylesheet" href="{% static 'main/css/styles.css' %}">
+
+  <style>
+    /* ===== ЗАБОРОНА ВИДІЛЕННЯ ТЕКСТУ ===== */
+    * {
+      user-select: none;
+      -webkit-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+    }
+
+    /* ===== ПРИХОВАНИЙ СКРОЛЛ ===== */
+    *,
+    *::before,
+    *::after {
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+
+    *::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    /* ===== HEADER AUTH BLOCK (авторизований) ===== */
+    .auth-block {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      position: absolute;
+      top: 0;
+      right: 30px;
+      height: 80px;
+      z-index: 10;
+    }
+
+    .user-text {
+      font-family: 'Oswald', sans-serif;
+      font-size: clamp(14px, 1.8vw, 26px);
+      font-weight: 400;
+      color: rgba(0, 0, 0, 0.6);
+      white-space: nowrap;
+      line-height: 1;
+      margin: 0;
+      padding: 0;
+    }
+
+    @media (max-width: 800px) {
+      .user-text {
+        display: none !important;
+      }
+    }
+
+    .logout-btn {
+      display: flex;
+      align-items: center;
+      background: none;
+      border: none;
+      outline: none;
+      text-decoration: none;
+      color: #111;
+      padding: 0;
+      box-shadow: none;
+    }
+
+    .logout-btn svg {
+      width: clamp(20px, 2.5vw, 45px);
+      height: clamp(20px, 2.5vw, 45px);
+    }
+
+    .logout-btn:hover {
+      transform: scale(1.1);
+      color: #000;
+    }
+
+    .logout-btn,
+    .logout-btn:hover,
+    .logout-btn:focus,
+    .logout-btn:active {
+      background: transparent !important;
+      box-shadow: none !important;
+      outline: none !important;
+    }
+
+    /* ===== HEADER КНОПКИ (не авторизований) ===== */
+    .topbar-right {
+      display: flex;
+      gap: 10px;
+      position: absolute;
+      right: 30px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+    }
+
+    /* ===== АДАПТИВ (≤1200px) ===== */
+    @media (max-width: 1200px) {
+
+      body {
+        overflow-y: scroll !important;
+        height: auto !important;
+      }
+
+      /* topbar — рядок: заголовок зліва/по центру, кнопки праворуч */
+      .topbar {
+        position: relative !important;
+        width: 100% !important;
+        height: 70px !important;
+        flex-direction: row !important;
+        justify-content: center !important;
+        align-items: center !important;
+        padding: 0 16px !important;
+      }
+
+      .topbar-title {
+        position: static !important;
+        transform: none !important;
+        font-size: clamp(24px, 6vw, 48px) !important;
+        line-height: 1 !important;
+      }
+
+      /* кнопки — абсолютно праворуч всередині topbar */
+      .topbar-right {
+        position: absolute !important;
+        right: 16px !important;
+        top: 50% !important;
+        transform: translateY(-50%) !important;
+        gap: 6px !important;
+      }
+
+      .btn {
+        font-size: clamp(10px, 1.6vw, 13px) !important;
+        padding: clamp(4px, 0.7vw, 7px) clamp(8px, 1.5vw, 16px) !important;
+        border-radius: 12px !important;
+      }
+
+      /* auth-block — абсолютно праворуч */
+      .auth-block {
+        position: absolute !important;
+        right: 16px !important;
+        top: 0 !important;
+        height: 70px !important;
+      }
+
+      /* sidebar */
+      .sidebar {
+        position: relative !important;
+        top: auto !important;
+        left: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        gap: 2px !important;
+        padding: 4px 10px !important;
+        justify-content: center !important;
+        align-items: center !important;
+        overflow: hidden !important;
+        z-index: 90 !important;
+      }
+
+      .sidebar a {
+        width: auto !important;
+        height: auto !important;
+        font-size: clamp(10px, 1.2vw, 16px) !important;
+        padding: clamp(4px, 0.6vw, 8px) clamp(8px, 1.2vw, 16px) !important;
+        white-space: nowrap !important;
+        border-radius: 8px !important;
+      }
+
+      /* content */
+      .content {
+        position: static !important;
+        margin-left: 0 !important;
+        width: 100% !important;
+        height: auto !important;
+        min-height: auto !important;
+        padding-top: 20px !important;
+        overflow-x: hidden !important;
+        overflow-y: visible !important;
+      }
+    }
+
+    /* ===== МОБІЛЬНИЙ (≤600px) ===== */
+    @media (max-width: 600px) {
+      .topbar {
+        height: 60px !important;
+      }
+
+      .topbar-title {
+        font-size: clamp(20px, 8vw, 36px) !important;
+      }
+
+      .btn {
+        font-size: clamp(9px, 2.5vw, 12px) !important;
+        padding: 4px 9px !important;
+        border-radius: 8px !important;
+      }
+
+      .topbar-right {
+        gap: 4px !important;
+      }
+
+      .sidebar {
+        justify-content: center !important;
+      }
+
+      .sidebar a {
+        font-size: clamp(9px, 2.5vw, 13px) !important;
+        padding: 4px 8px !important;
+      }
+    }
+
+    /* ===== ДУЖЕ МАЛИЙ ЕКРАН (≤400px) ===== */
+    @media (max-width: 400px) {
+      .topbar-title {
+        font-size: clamp(16px, 7vw, 28px) !important;
+      }
+
+      .sidebar {
+        justify-content: center !important;
+        padding: 4px 4px !important;
+        gap: 2px !important;
+      }
+
+      .sidebar a {
+        font-size: clamp(8px, 2.2vw, 11px) !important;
+        padding: 3px 5px !important;
+        white-space: nowrap !important;
+      }
+    }
+    
+  </style>
+
+  {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header class="topbar">
+
+    
+    {% if messages %}
+  {% for message in messages %}
+    <div class="alert-box">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+
+
+    <div class="topbar-title">АбітГід</div>
+
+
+    {% if user.is_authenticated %}
+
+      <div class="auth-block">
+        {% if request.user.is_superuser %}
+          <span class="user-text">Вітаємо, {{ request.user.username }}</span>
+        {% else %}
+          <span class="user-text">Вітаємо, {{ profile.full_name.split.1 }} {{ profile.full_name.split.2 }}</span>
+        {% endif %}
+
+        <a href="{% url 'logout' %}" class="logout-btn">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="currentColor">
+            <path d="M176 96h112a16 16 0 0 1 16 16v48h-32v-32H192v256h80v-32h32v48a16 16 0 0 1-16 16H176a16 16 0 0 1-16-16V112a16 16 0 0 1 16-16z"/>
+            <path d="M352 176l80 80-80 80v-48H256v-64h96v-48z"/>
+          </svg>
+        </a>
+      </div>
+
+    {% else %}
+
+      <div class="topbar-right">
+        <a href="{% url 'login' %}" class="btn btn-login">Вхід</a>
+        <a href="{% url 'registration' %}" class="btn btn-register">Реєстрація</a>
+      </div>
+
+    {% endif %}
+  </header>
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <a href="{% url 'home' %}" class="{% if request.resolver_match.url_name == 'home' %}active{% endif %}">ГОЛОВНА</a>
+    <a href="{% url 'universities' %}" class="{% if 'university' in request.path or 'universities' in request.path %}active{% endif %}">УНІВЕРСИТЕТИ</a>
+    <a href="{% url 'profile' %}" class="{% if request.resolver_match.url_name == 'profile' or request.resolver_match.url_name == 'saved_recommendations' %}active{% endif %}">ОСОБИСТИЙ КАБІНЕТ</a>
+    <a href="{% url 'contacts' %}" class="{% if request.resolver_match.url_name == 'contacts' %}active{% endif %}">КОНТАКТИ</a>
+    <a href="{% url 'sources' %}" class="{% if request.resolver_match.url_name == 'sources' %}active{% endif %}">ДЖЕРЕЛА</a>
+    {% if request.user.is_superuser %}
+      <a href="{% url 'admin_credentials' %}" class="{% if request.resolver_match.url_name == 'admin_credentials' or request.resolver_match.url_name == 'admin_credential_create' %}active{% endif %}">ПОСВІДЧЕННЯ</a>      
+      <a href="{% url 'admin_users' %}" class="{% if request.resolver_match.url_name == 'admin_users' %}active{% endif %}">КОРИСТУВАЧІ СИСТЕМИ</a>
+    {% endif %}
+  </aside>
+
+  <!-- CONTENT -->
+  <main class="content">
+    {% block content %}
+    {% endblock %}
+  </main>
+
+</body>
+
+<script>
+  setTimeout(() => {
+    const alerts = document.querySelectorAll('.alert-box');
+    alerts.forEach(alert => {
+      alert.classList.add('alert-hide');
+      setTimeout(() => { alert.remove(); }, 500);
+    });
+  }, 5000);
+
+  document.addEventListener("DOMContentLoaded", function () {
+    const roleSelect = document.getElementById("roleSelect");
+    const idRow = document.getElementById("idNumberRow");
+    if (!roleSelect || !idRow) return;
+    roleSelect.addEventListener("change", function () {
+      idRow.style.display = this.value === "university_rep" ? "flex" : "none";
+    });
+  });
+  
+</script>
+
+</html>

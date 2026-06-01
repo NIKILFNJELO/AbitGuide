@@ -1,0 +1,159 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Офіційний сайт університету {{ uni.abbr }}{% endblock %}
+
+{% block extra_css %}
+<style>
+
+.content {
+  margin-left: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100vh;
+}
+
+.site-card {
+  margin-right: 25%;
+  margin-top: -50px;
+  width: 900px;
+
+  background: rgba(255, 220, 160, 0.70);
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+.site-card::-webkit-scrollbar { display: none; }
+
+.site-header {
+  background: #e3a64b;
+  height: 75px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+
+  font-family: 'Oswald', sans-serif;
+  font-size: 34px;
+  font-weight: 600;
+  color: #3a2a00;
+
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.back-arrow {
+  position: absolute;
+  left: 27px;
+  font-size: 32px;
+  cursor: pointer;
+  transition: 0.25s ease;
+  color: #3a2a00;
+  text-decoration: none;
+}
+.back-arrow:hover { transform: translateX(-6px) scale(1.1); }
+
+.edit-btn {
+  position: absolute;
+  right: 27px;
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  transition: 0.25s ease;
+  opacity: 0.75;
+}
+.edit-btn:hover {
+  opacity: 1;
+  transform: scale(1.15);
+}
+
+.site-body {
+  padding: 15px 35px 15px 35px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.site-preview {
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.2);
+}
+
+.site-preview img {
+  width: 100%;
+  height: 380px;
+  object-fit: cover;
+  display: block;
+}
+
+.site-link-row {
+  background: #f2e7d5;
+  border-radius: 20px;
+  padding: 16px 24px;
+
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 20px;
+  color: rgba(43, 26, 0, 0.80);
+
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.15);
+}
+
+.site-link-row strong {
+  color: rgba(43, 26, 0, 1);
+  font-weight: 700;
+}
+
+.site-link-row a {
+  color: #1a6fbf;
+  text-decoration: none;
+  transition: 0.2s;
+}
+.site-link-row a:hover { text-decoration: underline; }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="content">
+  <div class="site-card">
+
+    <div class="site-header">
+      <a class="back-arrow" href="/universities/{{ uni.slug }}/">&#10094;</a>
+      Офіційний сайт університету {{ uni.abbr }}
+      {% if request.user.is_authenticated and request.user.profile.role == 'university_rep' and request.user.profile.university_slug == uni.slug %}
+        <a class="edit-btn" href="{% url 'university_website_edit' slug=uni.slug %}" title="Редагувати">
+          <img src="{% static 'main/images/edit_icon.png' %}" alt="edit" width="32" height="32"
+               style="filter: brightness(0);">
+        </a>
+      {% endif %}
+      
+    </div>
+
+    <div class="site-body">
+
+      <div class="site-preview">
+        <img src="{% if website and website.image_url %}{{ website.image_url }}{% else %}https://hneu.edu.ua/images/tmp/img-slider-2-xs.jpg{% endif %}"
+             alt="Офіційний сайт ХНЕУ">
+      </div>
+
+      <div class="site-link-row">
+        <strong>Посилання на сайт:</strong>
+        {% if website and website.site_url %}
+          <a href="{{ website.site_url }}" target="_blank">{{ website.site_url }}</a>
+        {% else %}
+          <a href="https://www.hneu.edu.ua/" target="_blank">https://hneu.edu.ua/</a>
+        {% endif %}
+      </div>
+
+    </div>
+  </div>
+</main>
+
+{% endblock %}

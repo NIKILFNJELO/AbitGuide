@@ -1,0 +1,354 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Вхід{% endblock %}
+
+{% block extra_css %}
+<style>
+
+  .login-card {
+    margin-right: 25%;
+    margin-top: -50px;
+    width: 600px;
+
+    background: rgba(255, 220, 160, 0.70);
+    border-radius: 20px;
+
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+  }
+
+  .login-header {
+    background: #e3a64b;
+    height: 75px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    font-family: 'Oswald', sans-serif;
+    font-size: 38px;
+    font-weight: 600;
+    color: #3a2a00;
+  }
+
+  .login-body {
+    padding: 35px 40px 25px 40px;
+  }
+
+  .form-row {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    gap: 10px;
+  }
+
+  .form-row label {
+    width: 140px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 26px;
+    color: #2b1a00;
+  }
+
+  .form-row input {
+    flex: 1;
+    padding: 14px 20px;
+
+    border-radius: 25px;
+    border: none;
+
+    background: #f2e7d5;
+
+    font-family: 'Ubuntu Mono', monospace;
+    font-size: 20px;
+
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.15);
+  }
+
+  .error-field {
+    border: 2px solid red !important;
+    background: #ffe5e5 !important;
+  }
+
+  .error-text {
+    font-family: 'Ubuntu Mono', monospace;
+    color: red;
+    font-size: 14px;
+    margin-left: 150px;
+    margin-bottom: 10px;
+  }
+
+  .login-btn {
+    width: 100%;
+    margin-top: 20px;
+    padding: 15px;
+
+    border: none;
+    border-radius: 20px;
+
+    background: #2f5fa5;
+    color: white;
+
+    font-size: 24px;
+    font-family: 'Oswald', sans-serif;
+
+    cursor: pointer;
+  }
+
+  .content {
+    margin-left: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+  }
+
+  .auth-links {
+    text-align: right;
+    margin-top: -5px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: #2b1a00;
+  }
+
+  .auth-links a {
+    font-family: 'Oswald', sans-serif;
+    font-size: 22px;
+    font-weight: 500;
+    color: #2f5fa5;
+    text-decoration: none !important;
+    transition: 0.2s ease;
+  }
+
+  .auth-links a:hover {
+    text-decoration: none !important;
+  }
+
+  .password-wrapper {
+    flex: 1;
+    position: relative;
+  }
+
+  .password-wrapper input {
+    width: 100%;
+    box-sizing: border-box;
+    padding-right: 50px;
+  }
+
+  .toggle-eye {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    width: 24px;
+    height: 24px;
+    opacity: 0.5;
+    transition: opacity 0.2s;
+  }
+
+  .toggle-eye:hover {
+    opacity: 1;
+  }
+
+  /* ===== 125% ===== */
+  @media (max-width: 1280px) {
+    .login-card {
+      margin-right: 10%;
+      margin-top: -20px;
+      width: min(600px, 88%);
+    }
+    .login-header {
+      height: 62px;
+      font-size: 28px;
+    }
+    .login-body {
+      padding: 16px 28px 20px 28px;
+    }
+    .form-row label {
+      font-size: 20px;
+    }
+    .form-row input {
+      font-size: 16px;
+      padding: 10px 16px;
+    }
+    .auth-links,
+    .auth-links a {
+      font-size: 18px;
+    }
+  }
+
+  /* ===== 110% / планшет ===== */
+  @media (max-width: 1100px) {
+    .content {
+      margin-left: 0;
+      height: auto;
+      min-height: 80vh;
+      padding: 20px 16px 40px;
+      align-items: flex-start;
+    }
+    .login-card {
+      margin-right: 0;
+      margin-top: 0;
+      width: min(600px, 94%);
+    }
+    .login-header {
+      height: 56px;
+      font-size: 22px;
+    }
+    .login-body {
+      padding: 14px 20px 18px 20px;
+    }
+    .form-row label {
+      font-size: 17px;
+      width: 110px;
+    }
+    .form-row input {
+      font-size: 14px;
+      padding: 9px 14px;
+    }
+    .error-text {
+      margin-left: 120px;
+      font-size: 12px;
+    }
+    .auth-links,
+    .auth-links a {
+      font-size: 15px;
+    }
+    .login-btn {
+      font-size: 18px;
+      padding: 12px;
+    }
+  }
+
+  /* ===== Мобільний ===== */
+  @media (max-width: 600px) {
+    .content {
+      margin-left: 0;
+      padding: 10px 8px 20px;
+      justify-content: center;
+    }
+    .login-card {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      border-radius: 12px;
+      box-shadow: none;
+    }
+    .login-header {
+      height: 50px;
+      font-size: 18px;
+    }
+    .login-body {
+      padding: 12px 14px 16px 14px;
+    }
+    .form-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+    }
+    .form-row label {
+      font-size: 15px;
+      width: auto;
+    }
+    .form-row input {
+      font-size: 13px;
+      padding: 8px 12px;
+      width: 100%;
+    }
+    .password-wrapper {
+      width: 100%;
+    }
+    .error-text {
+      margin-left: 0;
+      font-size: 12px;
+    }
+    .auth-links,
+    .auth-links a {
+      font-size: 13px;
+    }
+    .login-btn {
+      font-size: 16px;
+      padding: 10px;
+    }
+  }
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<main class="content">
+
+  <div class="login-card">
+
+    <div class="login-header">
+      ВХІД
+    </div>
+
+    <div class="login-body">
+
+      <form method="post">
+        {% csrf_token %}
+
+        <!-- Логін -->
+        <div class="form-row">
+          <label>Логін:</label>
+          <input type="text" name="username"
+                 placeholder="Введіть адресу електронної пошти"
+                 value="{{ data.username }}"
+                 class="{% if errors.username %}error-field{% endif %}">
+        </div>
+
+        {% if errors.username %}
+          <div class="error-text">{{ errors.username }}</div>
+        {% endif %}
+
+        <!-- Пароль -->
+        <div class="form-row">
+          <label>Пароль:</label>
+          <div class="password-wrapper">
+            <input type="password" name="password" id="passwordInput"
+                   placeholder="Введіть пароль"
+                   class="{% if errors.password %}error-field{% endif %}">
+            <img id="eyeIcon"
+                 src="{% static 'main/images/eye_open.png' %}"
+                 class="toggle-eye"
+                 onclick="togglePassword()">
+          </div>
+        </div>
+
+        {% if errors.password %}
+          <div class="error-text">{{ errors.password }}</div>
+        {% endif %}
+
+        <div class="auth-links">
+          <a href="{% url 'password_reset' %}">Забули пароль?</a>
+        </div>
+
+        <button type="submit" class="login-btn">УВІЙТИ</button>
+
+      </form>
+
+    </div>
+
+  </div>
+
+</main>
+
+<script>
+function togglePassword() {
+  const input = document.getElementById('passwordInput');
+  const icon = document.getElementById('eyeIcon');
+  if (input.type === 'password') {
+    input.type = 'text';
+    icon.src = "{% static 'main/images/eye_closed.png' %}";
+  } else {
+    input.type = 'password';
+    icon.src = "{% static 'main/images/eye_open.png' %}";
+  }
+}
+</script>
+
+{% endblock %}

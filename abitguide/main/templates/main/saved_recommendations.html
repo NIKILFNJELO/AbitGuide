@@ -1,0 +1,541 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Збережені рекомендації{% endblock %}
+
+{% block extra_css %}
+<style>
+
+.content {
+  margin-left: 180px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  height: 100vh;
+}
+
+.rec-card-big {
+  margin-right: 25%;
+  margin-top: -50px;
+  width: 900px;
+  background: rgba(255, 220, 160, 0.70);
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  max-height: calc(85vh - 70px);
+  display: flex;
+  flex-direction: column;
+}
+
+.rec-header {
+  background: #e3a64b;
+  height: 75px;
+  min-height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  font-family: 'Oswald', sans-serif;
+  font-size: 32px;
+  font-weight: 600;
+  color: #3a2a00;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  flex-shrink: 0;
+}
+
+.back-arrow {
+  position: absolute;
+  left: 24px;
+  font-size: 32px;
+  cursor: pointer;
+  transition: 0.25s ease;
+  color: #3a2a00;
+  text-decoration: none;
+}
+.back-arrow:hover { transform: translateX(-6px) scale(1.1); }
+
+.rec-counter {
+  position: absolute;
+  right: 24px;
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 16px;
+  color: #3a2a00;
+  opacity: 0.70;
+}
+
+.rec-body {
+  padding: 16px 28px 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  overflow-y: auto;
+  scrollbar-width: none;
+  min-height: 0;
+  flex: 1;
+}
+.rec-body::-webkit-scrollbar { display: none; }
+
+.rec-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-shrink: 0;
+}
+
+.clear-btn {
+  padding: 8px 22px;
+  border: none;
+  border-radius: 20px;
+  background: #2f5fa5;
+  color: white;
+  font-family: 'Oswald', sans-serif;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-decoration: none;
+}
+.clear-btn:hover { filter: brightness(1.1); }
+
+.empty-state {
+  text-align: center;
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 20px;
+  color: rgba(43, 26, 0, 0.70);
+  padding: 20px 0;
+}
+
+.saved-item {
+  background: #f2e7d5;
+  border-radius: 16px;
+  overflow: hidden;
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.12);
+  flex-shrink: 0;
+}
+
+.saved-item-header {
+  background: #e3a64b;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+
+.saved-item-title {
+  font-family: 'Oswald', sans-serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: #3a2a00;
+}
+
+.saved-item-body {
+  display: none;
+  padding: 16px 24px 20px;
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 17px;
+  color: rgba(43, 26, 0, 0.85);
+  line-height: 1.75;
+  border-top: 1px solid rgba(200, 160, 80, 0.30);
+}
+.saved-item.open .saved-item-body { display: block; }
+
+.saved-item-body p { margin: 0 0 8px; }
+
+.specs-label {
+  font-weight: 700;
+  color: rgba(43, 26, 0, 1);
+  display: block;
+  margin: 10px 0 6px;
+}
+
+.specs-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.delete-form {
+  margin-top: 8px;
+}
+.delete-btn {
+  padding: 10px 24px;
+  border: none;
+  border-radius: 20px;
+  background: #2f5fa5;
+  color: white;
+  font-family: 'Oswald', sans-serif;
+  font-size: 18px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.delete-btn:hover { filter: brightness(1.1); }
+
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.45);
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+.modal-overlay.active { display: flex; }
+
+.modal-card {
+  width: 500px;
+  background: rgba(255, 220, 160, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.35);
+  overflow: hidden;
+}
+
+.modal-header {
+  background: #e3a64b;
+  height: 65px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Oswald', sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  color: #3a2a00;
+}
+
+.modal-body {
+  padding: 24px 32px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.modal-text {
+  font-family: 'Ubuntu Mono', monospace;
+  font-size: 18px;
+  color: rgba(43, 26, 0, 0.80);
+  text-align: center;
+}
+
+.modal-buttons {
+  display: flex;
+  gap: 14px;
+}
+
+.modal-confirm {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 20px;
+  background: #2f5fa5;
+  color: white;
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+.modal-confirm:hover { filter: brightness(1.1); }
+
+.modal-cancel {
+  flex: 1;
+  padding: 12px;
+  border: none;
+  border-radius: 20px;
+  background: #f2e7d5;
+  color: #2b1a00;
+  font-family: 'Oswald', sans-serif;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: inset 0 3px 6px rgba(0,0,0,0.15);
+  transition: 0.2s ease;
+}
+.modal-cancel:hover { filter: brightness(1.05); }
+
+/* ===== 125% ===== */
+@media (max-width: 1280px) {
+  .rec-card-big {
+    margin-right: 10%;
+    margin-top: -20px;
+    width: min(900px, 88%);
+  }
+  .rec-header {
+    height: 62px;
+    font-size: 24px;
+  }
+  .back-arrow {
+    font-size: 26px;
+  }
+  .rec-body {
+    padding: 14px 22px 16px;
+  }
+  .saved-item-title {
+    font-size: 19px;
+  }
+  .saved-item-body {
+    font-size: 15px;
+  }
+}
+
+/* ===== 110% / планшет ===== */
+@media (max-width: 1100px) {
+  .content {
+    margin-left: 0;
+    height: auto;
+    min-height: 80vh;
+    padding: 20px 16px 40px;
+    align-items: flex-start;
+  }
+  .rec-card-big {
+    margin-right: 0;
+    margin-top: 0;
+    width: min(900px, 94%);
+    max-height: none;
+  }
+  .rec-header {
+    height: 56px;
+    font-size: 20px;
+  }
+  .back-arrow {
+    font-size: 20px;
+    left: 16px;
+  }
+  .rec-counter {
+    font-size: 13px;
+    right: 16px;
+  }
+  .rec-body {
+    padding: 12px 18px 16px;
+  }
+  .saved-item-title {
+    font-size: 17px;
+  }
+  .saved-item-body {
+    font-size: 14px;
+    padding: 12px 18px 16px;
+  }
+  .clear-btn {
+    font-size: 15px;
+    padding: 7px 18px;
+  }
+  .delete-btn {
+    font-size: 15px;
+    padding: 8px 18px;
+  }
+  .empty-state {
+    font-size: 16px;
+  }
+  .modal-card {
+    width: min(500px, 90%);
+  }
+  .modal-header {
+    font-size: 20px;
+    height: 54px;
+  }
+  .modal-text {
+    font-size: 15px;
+  }
+  .modal-confirm,
+  .modal-cancel {
+    font-size: 17px;
+  }
+}
+
+/* ===== Мобільний ===== */
+@media (max-width: 600px) {
+  .content {
+    margin-left: 0;
+    padding: 10px 8px 20px;
+    justify-content: center;
+  }
+  .rec-card-big {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    border-radius: 12px;
+    box-shadow: none;
+    max-height: none;
+    box-sizing: border-box;
+  }
+  .rec-header {
+    height: 50px;
+    font-size: 16px;
+  }
+  .back-arrow {
+    font-size: 18px;
+    left: 12px;
+  }
+  .rec-counter {
+    font-size: 12px;
+    right: 12px;
+  }
+  .rec-body {
+    padding: 10px 12px 14px;
+    gap: 10px;
+  }
+  .saved-item-header {
+    padding: 10px 14px;
+  }
+  .saved-item-title {
+    font-size: 15px;
+  }
+  .saved-item-body {
+    font-size: 13px;
+    padding: 10px 14px 14px;
+    line-height: 1.6;
+  }
+  .clear-btn {
+    font-size: 13px;
+    padding: 6px 14px;
+  }
+  .delete-btn {
+    font-size: 13px;
+    padding: 7px 14px;
+  }
+  .empty-state {
+    font-size: 14px;
+  }
+  .modal-card {
+    width: 100%;
+    max-width: 100%;
+    border-radius: 12px;
+    margin: 0 8px;
+    box-sizing: border-box;
+  }
+  .modal-header {
+    font-size: 17px;
+    height: 48px;
+  }
+  .modal-body {
+    padding: 16px 18px 20px;
+  }
+  .modal-text {
+    font-size: 13px;
+  }
+  .modal-confirm,
+  .modal-cancel {
+    font-size: 15px;
+    padding: 10px;
+  }
+}
+
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="content">
+  <div class="rec-card-big">
+
+    <div class="rec-header">
+      <a class="back-arrow" href="{% url 'profile' %}">&#10094;</a>
+      ЗБЕРЕЖЕНІ РЕКОМЕНДАЦІЇ
+    </div>
+
+    <div class="rec-body">
+
+      {% if total %}
+      <div class="rec-top-row">
+        <button class="clear-btn" onclick="openClearModal()">Очистити все</button>
+      </div>
+      {% endif %}
+
+      {% if recs %}
+        {% for rec in recs %}
+        <div class="saved-item" id="saved-{{ rec.id }}">
+
+          <div class="saved-item-header" onclick="toggleSaved('saved-{{ rec.id }}')">
+            <span class="saved-item-title">Рекомендація №{{ rec.number }}</span>
+          </div>
+
+          <div class="saved-item-body">
+            <p><strong>Дата:</strong> {{ rec.date }} &nbsp;|&nbsp; <strong>Час:</strong> {{ rec.time }}</p>
+            <p><strong>Університет:</strong> {{ rec.university }}</p>
+            <p><strong>Середній бал НМТ:</strong> {{ rec.avg_score }}</p>
+            <p><strong>Підходящих спеціальностей:</strong> {{ rec.count }}</p>
+
+            {% if rec.fitting_specs %}
+              <span class="specs-label">Перелік підходящих спеціальностей:</span>
+              <ul class="specs-list">
+                {% for spec in rec.fitting_specs %}
+                  <li>{{ spec.name }}</li>
+                {% endfor %}
+              </ul>
+            {% endif %}
+
+            <div class="delete-form">
+              <button class="delete-btn"
+                      onclick="openDeleteModal('{{ rec.id }}')">
+                Видалити рекомендацію
+              </button>
+            </div>
+          </div>
+
+        </div>
+        {% endfor %}
+
+      {% else %}
+        <div class="empty-state">
+          Ви ще не зберегли жодної рекомендації.<br>
+          Скористайтеся калькулятором балів у розділі університетів.
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+</main>
+
+<!-- Модальне вікно видалення однієї рекомендації -->
+<div class="modal-overlay" id="deleteModal">
+  <div class="modal-card">
+    <div class="modal-header">Видалення рекомендації</div>
+    <div class="modal-body">
+      <p class="modal-text">Ви впевнені, що хочете видалити цю рекомендацію?</p>
+      <div class="modal-buttons">
+        <form id="deleteForm" method="get" action="">
+          <button type="submit" class="modal-confirm">Видалити</button>
+        </form>
+        <button class="modal-cancel" onclick="closeDeleteModal()">Скасувати</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Модальне вікно очищення всього списку -->
+<div class="modal-overlay" id="clearModal">
+  <div class="modal-card">
+    <div class="modal-header">Очистити всі рекомендації</div>
+    <div class="modal-body">
+      <p class="modal-text">Ви впевнені, що хочете видалити всі збережені рекомендації? Цю дію не можна скасувати.</p>
+      <div class="modal-buttons">
+        <a href="{% url 'clear_recommendations' %}" class="modal-confirm" style="text-align:center; text-decoration:none; display:flex; align-items:center; justify-content:center;">
+          Очистити все
+        </a>
+        <button class="modal-cancel" onclick="closeClearModal()">Скасувати</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function toggleSaved(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+function openDeleteModal(recId) {
+  document.getElementById('deleteForm').action = '/recommendations/delete/' + recId + '/';
+  document.getElementById('deleteModal').classList.add('active');
+}
+function closeDeleteModal() {
+  document.getElementById('deleteModal').classList.remove('active');
+}
+
+function openClearModal() {
+  document.getElementById('clearModal').classList.add('active');
+}
+function closeClearModal() {
+  document.getElementById('clearModal').classList.remove('active');
+}
+</script>
+
+{% endblock %}

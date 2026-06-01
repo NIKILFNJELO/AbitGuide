@@ -1,0 +1,13 @@
+:root {
+  --color-primary: #2f5fa5;   /* Увійти */
+  --color-secondary: #f28c45; /* Реєстрація */
+
+  --color-topbar: rgba(240, 200, 140, 0.85);
+  --color-sidebar: rgba(240, 200, 140, 0.85);
+  --color-overlay: rgba(255, 220, 160, 0.8);
+
+  --color-text-dark: #333;
+  --color-white: #ffffff;
+}
+
+/*https://ecofactortech.com/wp-content/uploads/2025/08/harkiv-1024x542.png*/

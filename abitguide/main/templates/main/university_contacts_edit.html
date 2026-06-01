@@ -1,0 +1,348 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Редагування контактів {{ uni.abbr }}{% endblock %}
+
+{% block extra_css %}
+<style>
+
+  .content {
+    margin-left: 180px;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    height: 100vh;
+  }
+
+  .login-card {
+    margin-right: 25%;
+    margin-top: -50px;
+    width: 1000px;
+    max-height: calc(100vh - 190px);
+
+    background: rgba(255, 220, 160, 0.70);
+    border-radius: 20px;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
+
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  .login-header {
+    background: #e3a64b;
+    height: 75px;
+    flex-shrink: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    font-family: 'Oswald', sans-serif;
+    font-size: 34px;
+    font-weight: 600;
+    color: #3a2a00;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+  }
+
+  .back-arrow {
+    position: absolute;
+    left: 24px;
+    font-size: 32px;
+    cursor: pointer;
+    transition: 0.25s ease;
+    color: #3a2a00;
+    text-decoration: none;
+  }
+  .back-arrow:hover { transform: translateX(-6px) scale(1.1); }
+
+  .login-body {
+    padding: 35px 40px 25px 40px;
+    overflow-y: auto;
+    scrollbar-width: none;
+  }
+  .login-body::-webkit-scrollbar { display: none; }
+
+  .form-row {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    gap: 10px;
+  }
+
+  .form-row label {
+    width: 180px;
+    flex-shrink: 0;
+    font-family: 'Oswald', sans-serif;
+    font-size: 26px;
+    color: #2b1a00;
+    padding-top: 12px;
+  }
+
+  .form-row input {
+    flex: 1;
+    padding: 14px 20px;
+    border-radius: 25px;
+    border: none;
+    background: #f2e7d5;
+    font-family: 'Ubuntu Mono', monospace;
+    font-size: 18px;
+    line-height: 1.5;
+    box-shadow: inset 0 3px 6px rgba(0,0,0,0.15);
+    outline: none;
+  }
+
+  .error-field {
+    border: 2px solid red !important;
+    background: #ffe5e5 !important;
+  }
+
+  .error-text {
+    font-family: 'Ubuntu Mono', monospace;
+    color: red;
+    font-size: 14px;
+    margin-left: 190px;
+    margin-bottom: 10px;
+    margin-top: -8px;
+  }
+
+  .save-btn {
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    padding: 15px;
+    border: none;
+    border-radius: 20px;
+    background: #2f5fa5;
+    color: white;
+    font-size: 24px;
+    font-family: 'Oswald', sans-serif;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+  .save-btn:hover { filter: brightness(1.08); }
+
+  /* ===== 125% ===== */
+  @media (max-width: 1280px) {
+    .login-card {
+      margin-right: 10%;
+      margin-top: -20px;
+      width: min(1000px, 88%);
+    }
+    .login-header {
+      height: 62px;
+      font-size: 28px;
+    }
+    .back-arrow {
+      font-size: 26px;
+    }
+    .login-body {
+      padding: 16px 28px 20px 28px;
+    }
+    .form-row label {
+      font-size: 20px;
+      width: 180px;
+    }
+    .form-row input {
+      font-size: 16px;
+      padding: 10px 16px;
+    }
+    .error-text {
+      margin-left: 190px;
+    }
+    .save-btn {
+      font-size: 20px;
+      padding: 13px;
+    }
+  }
+
+  /* ===== 110% / Планшет ===== */
+  @media (max-width: 1100px) {
+    .content {
+      margin-left: 0;
+      height: auto;
+      min-height: 80vh;
+      padding: 20px 16px 40px;
+      align-items: flex-start;
+    }
+    .login-card {
+      margin-right: 0;
+      margin-top: 0;
+      width: min(1000px, 94%);
+      max-height: none;
+    }
+    .login-header {
+      height: 56px;
+      font-size: 22px;
+    }
+    .back-arrow {
+      font-size: 20px;
+      left: 16px;
+    }
+    .login-body {
+      padding: 14px 20px 18px 20px;
+    }
+    .form-row label {
+      font-size: 17px;
+      width: 150px;
+    }
+    .form-row input {
+      font-size: 14px;
+      padding: 9px 14px;
+    }
+    .error-text {
+      font-size: 12px;
+      margin-left: 160px;
+    }
+    .save-btn {
+      font-size: 17px;
+      padding: 12px;
+    }
+  }
+
+  /* ===== Мобільний ===== */
+  @media (max-width: 600px) {
+    .content {
+      margin-left: 0;
+      padding: 10px 8px 20px;
+      justify-content: center;
+      height: auto;
+    }
+    .login-card {
+      width: 100%;
+      max-width: 100%;
+      margin: 0;
+      border-radius: 12px;
+      box-shadow: none;
+      max-height: none;
+    }
+    .login-header {
+      height: 50px;
+      font-size: 18px;
+    }
+    .back-arrow {
+      font-size: 18px;
+      left: 12px;
+    }
+    .login-body {
+      padding: 14px 14px 16px 14px;
+    }
+    .form-row {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 4px;
+      margin-bottom: 14px;
+    }
+    .form-row label {
+      font-size: 15px;
+      width: auto;
+      padding-top: 0;
+    }
+    .form-row input {
+      font-size: 13px;
+      padding: 10px 14px;
+      border-radius: 18px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .error-text {
+      font-size: 12px;
+      margin-left: 0;
+    }
+    .save-btn {
+      font-size: 14px;
+      padding: 11px;
+      border-radius: 14px;
+      margin-top: 14px;
+    }
+  }
+
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="content">
+  <div class="login-card">
+
+    <div class="login-header">
+      <a class="back-arrow" href="{% url 'university_contacts' slug=uni.slug %}">&#10094;</a>
+      Редагування контактів {{ uni.abbr }}
+    </div>
+
+    <div class="login-body">
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="form-row">
+          <label>Адреса:</label>
+          <input type="text" name="address"
+                 value="{{ contacts.address|default:'' }}"
+                 placeholder="Вулиця, місто, індекс"
+                 class="{% if errors.address %}error-field{% endif %}">
+        </div>
+        {% if errors.address %}<div class="error-text">{{ errors.address }}</div>{% endif %}
+
+        <div class="form-row">
+          <label>Телефон 1:</label>
+          <input type="text" name="phone_1"
+                 value="{{ contacts.phone_1|default:'' }}"
+                 placeholder="+380XXXXXXXXX або (0XX) XXX XX XX"
+                 class="{% if errors.phone_1 %}error-field{% endif %}">
+        </div>
+        {% if errors.phone_1 %}<div class="error-text">{{ errors.phone_1 }}</div>{% endif %}
+
+        <div class="form-row">
+          <label>Телефон 2:</label>
+          <input type="text" name="phone_2"
+                 value="{{ contacts.phone_2|default:'' }}"
+                 placeholder="+380XXXXXXXXX або (0XX) XXX XX XX"
+                 class="{% if errors.phone_2 %}error-field{% endif %}">
+        </div>
+        {% if errors.phone_2 %}<div class="error-text">{{ errors.phone_2 }}</div>{% endif %}
+
+        <div class="form-row">
+          <label>Email ПК:</label>
+          <input type="email" name="email_pk"
+                 value="{{ contacts.email_pk|default:'' }}"
+                 placeholder="pk@university.edu.ua"
+                 class="{% if errors.email_pk %}error-field{% endif %}">
+        </div>
+        {% if errors.email_pk %}<div class="error-text">{{ errors.email_pk }}</div>{% endif %}
+
+        <div class="form-row">
+          <label>Email ЗВО:</label>
+          <input type="email" name="email_uni"
+                 value="{{ contacts.email_uni|default:'' }}"
+                 placeholder="post@university.edu.ua"
+                 class="{% if errors.email_uni %}error-field{% endif %}">
+        </div>
+        {% if errors.email_uni %}<div class="error-text">{{ errors.email_uni }}</div>{% endif %}
+
+        <div class="form-row">
+          <label>YouTube:</label>
+          <input type="url" name="youtube"
+                 value="{{ contacts.youtube|default:'' }}"
+                 placeholder="https://www.youtube.com/@channel"
+                 class="{% if errors.youtube %}error-field{% endif %}">
+        </div>
+        {% if errors.youtube %}<div class="error-text">{{ errors.youtube }}</div>{% endif %}
+
+        <div class="form-row">
+          <label>Telegram:</label>
+          <input type="url" name="telegram"
+                 value="{{ contacts.telegram|default:'' }}"
+                 placeholder="https://t.me/channel"
+                 class="{% if errors.telegram %}error-field{% endif %}">
+        </div>
+        {% if errors.telegram %}<div class="error-text">{{ errors.telegram }}</div>{% endif %}
+
+        <button type="submit" class="save-btn">ЗБЕРЕГТИ ЗМІНИ</button>
+
+      </form>
+    </div>
+
+  </div>
+</main>
+{% endblock %}

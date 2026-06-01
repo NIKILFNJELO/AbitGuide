@@ -1,0 +1,98 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Нова спеціальність — {{ uni.abbr }}{% endblock %}
+
+{% block extra_css %}
+<style>
+  .content { margin-left: 180px; display: flex; justify-content: center; align-items: flex-start; height: 100vh; }
+  .login-card { margin-right: 25%; margin-top: -50px; width: 1000px; max-height: calc(100vh - 190px); background: rgba(255,220,160,0.70); border-radius: 20px; box-shadow: 0 15px 40px rgba(0,0,0,0.25); display: flex; flex-direction: column; overflow: hidden; }
+  .login-header { background: #e3a64b; height: 75px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; position: relative; font-family: 'Oswald', sans-serif; font-size: 34px; font-weight: 600; color: #3a2a00; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+  .back-arrow { position: absolute; left: 24px; font-size: 32px; cursor: pointer; transition: 0.25s ease; color: #3a2a00; text-decoration: none; }
+  .back-arrow:hover { transform: translateX(-6px) scale(1.1); }
+  .login-body { padding: 35px 40px 25px 40px; overflow-y: auto; scrollbar-width: none; }
+  .login-body::-webkit-scrollbar { display: none; }
+  .form-row { display: flex; align-items: flex-start; margin-bottom: 15px; gap: 10px; }
+  .form-row label { width: 180px; flex-shrink: 0; font-family: 'Oswald', sans-serif; font-size: 26px; color: #2b1a00; padding-top: 12px; }
+  .form-row input, .form-row textarea { flex: 1; padding: 14px 20px; border-radius: 25px; border: none; background: #f2e7d5; font-family: 'Ubuntu Mono', monospace; font-size: 18px; line-height: 1.5; box-shadow: inset 0 3px 6px rgba(0,0,0,0.15); outline: none; resize: none; }
+  .form-row textarea { min-height: 100px; border-radius: 20px; scrollbar-width: none; }
+  .error-field { border: 2px solid red !important; background: #ffe5e5 !important; }
+  .error-text { font-family: 'Ubuntu Mono', monospace; color: red; font-size: 14px; margin-left: 190px; margin-bottom: 10px; margin-top: -8px; }
+  .save-btn { width: 100%; margin-top: 20px; margin-bottom: 10px; padding: 15px; border: none; border-radius: 20px; background: #2f5fa5; color: white; font-size: 24px; font-family: 'Oswald', sans-serif; cursor: pointer; transition: 0.2s ease; }
+  .save-btn:hover { filter: brightness(1.08); }
+</style>
+{% endblock %}
+
+{% block content %}
+<main class="content">
+  <div class="login-card">
+
+    <div class="login-header">
+      <a class="back-arrow" href="{% url 'university_detail' uni.slug %}">&#10094;</a>
+      Нова спеціальність {{ uni.abbr }}
+    </div>
+
+    <div class="login-body">
+      <form method="post">
+        {% csrf_token %}
+
+        <div class="form-row">
+          <label>Код:</label>
+          <input type="text" name="code" value="{{ data.code|default:'' }}"
+                 placeholder="Наприклад: А4.04"
+                 class="{% if errors.code %}error-field{% endif %}">
+        </div>
+        {% if errors.code %}<div class="error-text">{{ errors.code }}</div>{% endif %}
+
+        <div class="form-row">
+          <label>Назва:</label>
+          <input type="text" name="name" value="{{ data.name|default:'' }}"
+                 placeholder="Назва спеціальності"
+                 class="{% if errors.name %}error-field{% endif %}">
+        </div>
+        {% if errors.name %}<div class="error-text">{{ errors.name }}</div>{% endif %}
+
+        <div class="form-row">
+          <label>Про спеціальність:</label>
+          <textarea name="about" placeholder="Текст про спеціальність (необов'язково)"
+                    class="{% if errors.about %}error-field{% endif %}">{{ data.about|default:'' }}</textarea>
+        </div>
+        {% if errors.about %}<div class="error-text">{{ errors.about }}</div>{% endif %}
+
+        <div class="form-row">
+          <label>Що вивчають:</label>
+          <textarea name="what_to_study" placeholder="Перелік дисциплін (необов'язково)"
+                    class="{% if errors.what_to_study %}error-field{% endif %}">{{ data.what_to_study|default:'' }}</textarea>
+        </div>
+        {% if errors.what_to_study %}<div class="error-text">{{ errors.what_to_study }}</div>{% endif %}
+
+        <div class="form-row">
+          <label>Ким працювати:</label>
+          <textarea name="career" placeholder="Можливі професії (необов'язково)"
+                    class="{% if errors.career %}error-field{% endif %}">{{ data.career|default:'' }}</textarea>
+        </div>
+        {% if errors.career %}<div class="error-text">{{ errors.career }}</div>{% endif %}
+
+        <div class="form-row">
+          <label>Мін. бал:</label>
+          <input type="number" name="min_score" min="100" max="200" step="0.1"
+                 value="{{ data.min_score|default:'' }}" placeholder="100–200"
+                 class="{% if errors.min_score %}error-field{% endif %}">
+        </div>
+        {% if errors.min_score %}<div class="error-text">{{ errors.min_score }}</div>{% endif %}
+
+        <div class="form-row">
+          <label>Бал з шансом:</label>
+          <input type="number" name="high_score" min="100" max="200" step="0.1"
+                 value="{{ data.high_score|default:'' }}" placeholder="100–200"
+                 class="{% if errors.high_score %}error-field{% endif %}">
+        </div>
+        {% if errors.high_score %}<div class="error-text">{{ errors.high_score }}</div>{% endif %}
+
+        <button type="submit" class="save-btn">СТВОРИТИ</button>
+      </form>
+    </div>
+
+  </div>
+</main>
+{% endblock %}
